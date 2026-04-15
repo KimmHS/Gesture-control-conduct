@@ -32,16 +32,21 @@ class MotionBuffer:
     def latest(self) -> MotionSample | None:
         return self._samples[-1] if self._samples else None
 
-    def points(self, limit: int | None = None) -> list[tuple[int, int]]:
-        samples = list(self._samples)
+    def samples(self, limit: int | None = None) -> list[MotionSample]:
+        items = list(self._samples)
         if limit is not None:
-            samples = samples[-limit:]
-        return [(int(sample.x), int(sample.y)) for sample in samples]
+            items = items[-limit:]
+        return items
+
+    def recent_samples(self, now: float, window_seconds: float) -> list[MotionSample]:
+        threshold = now - max(window_seconds, 0.0)
+        return [sample for sample in self._samples if sample.is_live and sample.timestamp >= threshold]
+
+    def points(self, limit: int | None = None) -> list[tuple[int, int]]:
+        return [(int(sample.x), int(sample.y)) for sample in self.samples(limit=limit)]
 
     def average_confidence(self, limit: int | None = None) -> float:
-        samples = list(self._samples)
-        if limit is not None:
-            samples = samples[-limit:]
+        samples = self.samples(limit=limit)
         if not samples:
             return 0.0
         return float(mean(sample.confidence for sample in samples))

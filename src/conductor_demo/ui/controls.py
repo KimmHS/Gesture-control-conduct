@@ -4,6 +4,18 @@ from __future__ import annotations
 class FallbackControls:
     """Keyboard fallback controls for the live demo."""
 
+    ACTION_LABELS = {
+        "play_from_start": "play",
+        "pause": "pause",
+        "resume": "resume",
+        "pause_resume_toggle": "toggle",
+        "reset": "reset",
+        "calibrate": "calibrate",
+        "tempo_down": "tempo-",
+        "tempo_up": "tempo+",
+        "quit": "quit",
+    }
+
     def __init__(self, keymap: dict[str, str]) -> None:
         self.keymap = keymap
         self._code_map = {self._normalize_key(key): action for key, action in keymap.items()}
@@ -11,7 +23,8 @@ class FallbackControls:
     def describe(self) -> str:
         labels = []
         for key, action in self.keymap.items():
-            labels.append(f"{key.upper()} {action}")
+            action_label = self.ACTION_LABELS.get(action, action.replace("_", " "))
+            labels.append(f"{key.upper()} {action_label}")
         return " | ".join(labels)
 
     def resolve(self, key: str) -> str | None:

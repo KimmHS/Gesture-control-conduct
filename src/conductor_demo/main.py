@@ -24,6 +24,10 @@ def build_parser() -> argparse.ArgumentParser:
         help="Run for a fixed number of frames and exit.",
     )
     parser.add_argument(
+        "--demo-track",
+        help="Override the default demo WAV track path.",
+    )
+    parser.add_argument(
         "--self-test",
         action="store_true",
         help="Run a synthetic one-frame smoke test without opening the webcam.",
@@ -48,6 +52,8 @@ def main() -> int:
     config = load_config(args.config)
     if args.camera_index is not None:
         config.vision.camera_index = args.camera_index
+    if args.demo_track:
+        config.music.demo_track_path = args.demo_track
 
     runner = AppRunner(
         config,

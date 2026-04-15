@@ -48,9 +48,15 @@ def _ensure_model_asset() -> Path:
         return model_path
 
     model_path.parent.mkdir(parents=True, exist_ok=True)
-    LOGGER.info("Downloading MediaPipe hand landmarker model to %s", model_path)
-    with urlopen(HAND_LANDMARKER_MODEL_URL) as response, model_path.open("wb") as handle:
-        handle.write(response.read())
+    LOGGER.info("Downloading MediaPipe hand model to %s", model_path)
+    try:
+        with urlopen(HAND_LANDMARKER_MODEL_URL, timeout=20) as response, model_path.open("wb") as handle:
+            handle.write(response.read())
+    except Exception as exc:
+        raise RuntimeError(
+            "Missing MediaPipe hand model and automatic download failed. "
+            f"Expected file: `{model_path}`"
+        ) from exc
     return model_path
 
 
@@ -95,6 +101,7 @@ class HandTracker:
         max_num_hands: int,
         model_complexity: int,
         hand_confidence_threshold: float,
+        min_hand_scale_px: float,
     ) -> None:
         self.detection_confidence = detection_confidence
         self.tracking_confidence = tracking_confidence
@@ -103,11 +110,10 @@ class HandTracker:
         self.max_num_hands = max_num_hands
         self.model_complexity = model_complexity
         self.hand_confidence_threshold = hand_confidence_threshold
+        self.min_hand_scale_px = min_hand_scale_px
 
         self.running = False
         self._mp: Any | None = None
-        self._vision: Any | None = None
-        self._base_options: Any | None = None
         self._hands: Any | None = None
 
         self._last_active_hand: str | None = None
@@ -124,17 +130,15 @@ class HandTracker:
         model_path = _ensure_model_asset()
 
         self._mp = mp
-        self._base_options = mp.tasks.BaseOptions
-        self._vision = mp.tasks.vision
-        options = self._vision.HandLandmarkerOptions(
-            base_options=self._base_options(model_asset_buffer=model_path.read_bytes()),
-            running_mode=self._vision.RunningMode.VIDEO,
+        options = mp.tasks.vision.HandLandmarkerOptions(
+            base_options=mp.tasks.BaseOptions(model_asset_path=str(model_path)),
+            running_mode=mp.tasks.vision.RunningMode.VIDEO,
             num_hands=self.max_num_hands,
             min_hand_detection_confidence=self.detection_confidence,
             min_hand_presence_confidence=self.tracking_confidence,
             min_tracking_confidence=self.tracking_confidence,
         )
-        self._hands = self._vision.HandLandmarker.create_from_options(options)
+        self._hands = mp.tasks.vision.HandLandmarker.create_from_options(options)
         self.running = True
 
     def stop(self) -> None:
@@ -169,6 +173,7 @@ class HandTracker:
             confidence = active.handedness_score
             raw_wrist = active.wrist_px
             smoothed_wrist = self._smooth_wrist(raw_wrist)
+            tracking_ok = confidence >= self.hand_confidence_threshold and active.hand_scale_px >= self.min_hand_scale_px
 
             self._last_active_hand = active.label
             self._last_raw_wrist = raw_wrist
@@ -180,7 +185,7 @@ class HandTracker:
             self._last_seen_timestamp = timestamp
 
             return TrackingResult(
-                tracking_ok=confidence >= self.hand_confidence_threshold,
+                tracking_ok=tracking_ok,
                 mode="live",
                 hand_count=len(observations),
                 active_hand=active.label,
@@ -192,7 +197,7 @@ class HandTracker:
                 landmarks_px=active.landmarks_px,
                 debug_message=(
                     f"live {active.label.lower()} hand"
-                    if confidence >= self.hand_confidence_threshold
+                    if tracking_ok
                     else f"low-confidence {active.label.lower()} hand"
                 ),
             )
@@ -220,8 +225,8 @@ class HandTracker:
             return []
 
         observations: list[HandObservation] = []
-        for hand_landmarks, handedness in zip(results.hand_landmarks, results.handedness):
-            category = handedness[0] if handedness else None
+        for hand_landmark_set, handedness_set in zip(results.hand_landmarks, results.handedness):
+            category = handedness_set[0] if handedness_set else None
             score = float(category.score) if category is not None else 0.0
             label = str(category.category_name) if category is not None else "Unknown"
 
@@ -230,7 +235,7 @@ class HandTracker:
                     int(np.clip(landmark.x * width, 0, width - 1)),
                     int(np.clip(landmark.y * height, 0, height - 1)),
                 )
-                for landmark in hand_landmarks
+                for landmark in hand_landmark_set
             ]
             xs = [point[0] for point in landmarks_px]
             ys = [point[1] for point in landmarks_px]
@@ -254,8 +259,8 @@ class HandTracker:
         best = observations[0]
         best_score = -1.0
         for observation in observations:
-            size_score = min(observation.hand_scale_px / 140.0, 1.0)
-            score = 0.7 * observation.handedness_score + 0.3 * size_score
+            size_score = min(observation.hand_scale_px / max(self.min_hand_scale_px * 2.0, 1.0), 1.0)
+            score = 0.65 * observation.handedness_score + 0.35 * size_score
             if observation.label == self._last_active_hand:
                 score += 0.25
             if self._last_smoothed_wrist is not None:
@@ -303,7 +308,7 @@ class HandTracker:
 
     def describe(self) -> str:
         return (
-            f"mediapipe-task "
+            f"mediapipe-hands "
             f"det={self.detection_confidence:.2f} "
             f"track={self.tracking_confidence:.2f} "
             f"running={self.running}"
