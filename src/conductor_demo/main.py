@@ -28,6 +28,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="Override the default demo WAV track path.",
     )
     parser.add_argument(
+        "--midi-out",
+        help="Enable MIDI CC output to this macOS MIDI output port, for example 'IAC Driver Bus 1'.",
+    )
+    parser.add_argument(
+        "--midi-file",
+        help="MIDI file used for inspection and section-channel mapping.",
+    )
+    parser.add_argument(
         "--self-test",
         action="store_true",
         help="Run a synthetic one-frame smoke test without opening the webcam.",
@@ -54,6 +62,11 @@ def main() -> int:
         config.vision.camera_index = args.camera_index
     if args.demo_track:
         config.music.demo_track_path = args.demo_track
+    if args.midi_out:
+        config.midi.enabled = True
+        config.midi.port_name = args.midi_out
+    if args.midi_file:
+        config.midi.midi_file_path = args.midi_file
 
     runner = AppRunner(
         config,

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
+import sys
+from dataclasses import dataclass, field
 from math import hypot
 from pathlib import Path
 from typing import Any
@@ -34,7 +35,11 @@ def _require_mediapipe() -> Any:
     try:
         import mediapipe as mp
     except ImportError as exc:
-        raise RuntimeError("MediaPipe is required. Install dependencies with `pip install -r requirements.txt`.") from exc
+        raise RuntimeError(
+            "MediaPipe is required for webcam hand tracking. "
+            "On macOS, use Python 3.11 or 3.12, then run `pip install -r requirements.txt`. "
+            f"Current interpreter: Python {sys.version_info.major}.{sys.version_info.minor}."
+        ) from exc
     return mp
 
 
@@ -82,6 +87,7 @@ class TrackingResult:
     hand_scale_px: float | None = None
     bbox: tuple[int, int, int, int] | None = None
     landmarks_px: list[tuple[int, int]] | None = None
+    hands: dict[str, HandObservation] = field(default_factory=dict)
     debug_message: str = "no hands"
 
 
@@ -167,6 +173,12 @@ class HandTracker:
         results = self._hands.detect_for_video(mp_image, int(timestamp * 1000))
         height, width = frame.shape[:2]
         observations = self._extract_observations(results, width, height)
+        hands_by_label = {
+            observation.label: observation
+            for observation in observations
+            if observation.handedness_score >= self.hand_confidence_threshold
+            and observation.hand_scale_px >= self.min_hand_scale_px
+        }
 
         if observations:
             active = self._select_active_hand(observations)
@@ -195,6 +207,7 @@ class HandTracker:
                 hand_scale_px=active.hand_scale_px,
                 bbox=active.bbox,
                 landmarks_px=active.landmarks_px,
+                hands=hands_by_label,
                 debug_message=(
                     f"live {active.label.lower()} hand"
                     if tracking_ok

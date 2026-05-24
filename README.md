@@ -27,6 +27,8 @@ pip install -r requirements.txt
 python main.py
 ```
 
+MediaPipe currently needs a supported Python build for the webcam runtime. On macOS, use Python 3.11 or 3.12 for the full camera demo. Python 3.13 can install the non-MediaPipe dependencies and run the pure unit tests, but the webcam tracker will report that MediaPipe is unavailable.
+
 The default demo song is:
 
 ```text
@@ -38,6 +40,35 @@ You can replace it with your own PCM WAV track or override it on launch:
 ```bash
 python main.py --demo-track path/to/your_song.wav
 ```
+
+## MIDI + Two-Hand Landmark Control
+
+The demo now includes a two-hand section mixer:
+
+- left index fingertip selects `STRINGS`, `WOODWINDS`, `BRASS`, `PERCUSSION`, or `TUTTI` on the overlay
+- right wrist motion controls expression for the selected section
+- right downward strokes trigger section cue commands
+- optional MIDI output sends CC11 Expression to a macOS MIDI port
+
+Inspect the included MIDI file:
+
+```bash
+PYTHONPATH=src python -m conductor_demo.music.midi_inspect assets/audio/Symphony7_2.mid
+```
+
+Run visual mapping only:
+
+```bash
+python main.py
+```
+
+Run with macOS IAC MIDI output:
+
+```bash
+python main.py --midi-out "IAC Driver Bus 1"
+```
+
+On macOS, enable the IAC Driver in **Audio MIDI Setup** first, then route that bus into a DAW or software instrument. `Symphony7_2.mid` currently maps woodwinds to channels `0-5`, percussion/timpani to channel `6`, and strings to channels `7, 8, 10, 11, 12`; there is no brass channel in the current MIDI file, so the `BRASS` gesture zone is visual/scoring-only until a brass track is added or remapped.
 
 On the first run, the app will download the MediaPipe hand model automatically if `assets/models/hand_landmarker.task` is missing.
 

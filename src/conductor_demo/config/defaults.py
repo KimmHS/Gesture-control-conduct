@@ -66,6 +66,14 @@ class MusicConfig:
 
 
 @dataclass(slots=True)
+class MidiConfig:
+    enabled: bool = False
+    port_name: str | None = None
+    midi_file_path: str = "assets/audio/Symphony7_2.mid"
+    expression_cc: int = 11
+
+
+@dataclass(slots=True)
 class UIConfig:
     window_name: str = "Conductor Demo"
     show_help_overlay: bool = True
@@ -106,5 +114,6 @@ class AppConfig:
     dynamics: DynamicsConfig = field(default_factory=DynamicsConfig)
     calibration: CalibrationConfig = field(default_factory=CalibrationConfig)
     music: MusicConfig = field(default_factory=MusicConfig)
+    midi: MidiConfig = field(default_factory=MidiConfig)
     ui: UIConfig = field(default_factory=UIConfig)
     controls: ControlsConfig = field(default_factory=ControlsConfig)

@@ -8,10 +8,13 @@ import numpy as np
 
 from conductor_demo.app.state import AppState, CalibrationState, DynamicsState, PlaybackState
 from conductor_demo.config.defaults import AppConfig
+from conductor_demo.game.scoring import ScoreKeeper
+from conductor_demo.game.two_hand_mapping import TwoHandMapper, draw_mapping_overlay
 from conductor_demo.motion.buffer import MotionBuffer, MotionSample
 from conductor_demo.motion.calibration import CalibrationManager
 from conductor_demo.motion.dynamics import DynamicsEstimator
 from conductor_demo.music.controller import MusicController
+from conductor_demo.music.midi_output import MidiSectionOutput
 from conductor_demo.ui.controls import FallbackControls
 from conductor_demo.ui.overlay import OverlayRenderer
 from conductor_demo.vision.camera import CameraStream
@@ -53,6 +56,14 @@ class AppRunner:
             min_hand_scale_px=config.vision.min_hand_scale_px,
         )
         self.motion = MotionBuffer(maxlen=config.motion.buffer_size)
+        self.motion_by_hand = {
+            "Left": MotionBuffer(maxlen=config.motion.buffer_size),
+            "Right": MotionBuffer(maxlen=config.motion.buffer_size),
+        }
+        self.two_hand_mapper = TwoHandMapper()
+        self.mapping_state = self.two_hand_mapper.state
+        self.score_keeper = ScoreKeeper()
+        self.score_state = self.score_keeper.state
         self.calibration = CalibrationManager(
             enabled=config.calibration.enabled,
             hold_seconds=config.calibration.hold_seconds,
@@ -86,6 +97,11 @@ class AppRunner:
             max_rate=config.music.max_rate,
             demo_track_path=config.music.demo_track_path,
         )
+        self.midi_out = MidiSectionOutput(
+            enabled=config.midi.enabled,
+            port_name=config.midi.port_name,
+            control_number=config.midi.expression_cc,
+        )
         self.last_dynamics = self.dynamics.current()
         self.controls = FallbackControls(config.controls.keymap())
         self.overlay = OverlayRenderer(
@@ -99,6 +115,7 @@ class AppRunner:
         LOGGER.info("Starting %s", self.config.app_name)
         try:
             self.tracker.start()
+            self.midi_out.open()
             if self.self_test:
                 self._run_self_test()
                 LOGGER.info("Self-test completed.")
@@ -115,6 +132,7 @@ class AppRunner:
             except RuntimeError:
                 pass
             self.music.close()
+            self.midi_out.close()
             self.tracker.stop()
             self.camera.close()
 
@@ -146,6 +164,11 @@ class AppRunner:
             motion_buffer=self.motion,
             app_state=app_state,
             trail_length=self.config.motion.trail_length,
+        )
+        debug_frame = draw_mapping_overlay(
+            frame=debug_frame,
+            state=self.mapping_state,
+            score_state=self.score_state,
         )
         LOGGER.info(
             "\n%s",
@@ -205,6 +228,20 @@ class AppRunner:
                     )
                 )
 
+            self._append_dual_hand_motion(
+                hands=tracking.hands,
+                timestamp=packet.timestamp,
+            )
+            self.mapping_state = self.two_hand_mapper.update(
+                frame_size=(packet.frame.shape[1], packet.frame.shape[0]),
+                timestamp=packet.timestamp,
+                left_hand=tracking.hands.get("Left"),
+                right_hand=tracking.hands.get("Right"),
+                right_motion=self.motion_by_hand["Right"],
+            )
+            self.score_state = self.score_keeper.update(self.mapping_state)
+            self.midi_out.apply(self.mapping_state)
+
             self._update_motion_controls(tracking=tracking, timestamp=packet.timestamp)
             app_state = self._snapshot_state(tracking)
             debug_frame = self.overlay.draw_debug(
@@ -213,6 +250,11 @@ class AppRunner:
                 motion_buffer=self.motion,
                 app_state=app_state,
                 trail_length=self.config.motion.trail_length,
+            )
+            debug_frame = draw_mapping_overlay(
+                frame=debug_frame,
+                state=self.mapping_state,
+                score_state=self.score_state,
             )
             cv2.imshow(self.config.ui.window_name, debug_frame)
 
@@ -225,6 +267,29 @@ class AppRunner:
             if self.max_frames is not None and frame_count >= self.max_frames:
                 break
         return 0
+
+    def _append_dual_hand_motion(
+        self,
+        hands: dict[str, Any],
+        timestamp: float,
+    ) -> None:
+        for label in ("Left", "Right"):
+            hand = hands.get(label)
+            if hand is None:
+                continue
+
+            wrist = hand.wrist_px
+            self.motion_by_hand[label].append(
+                MotionSample(
+                    x=wrist[0],
+                    y=wrist[1],
+                    timestamp=timestamp,
+                    confidence=hand.handedness_score,
+                    raw_x=wrist[0],
+                    raw_y=wrist[1],
+                    is_live=True,
+                )
+            )
 
     def _update_motion_controls(self, tracking: TrackingResult, timestamp: float) -> None:
         calibration_completed = self.calibration.update(
@@ -262,7 +327,13 @@ class AppRunner:
             return True
         if action == "reset":
             self.motion.clear()
+            for motion in self.motion_by_hand.values():
+                motion.clear()
             self.tracker.reset()
+            self.two_hand_mapper.reset()
+            self.mapping_state = self.two_hand_mapper.state
+            self.score_keeper.reset()
+            self.score_state = self.score_keeper.state
             self.dynamics.reset()
             self.music.reset()
             self.calibration.cancel_active()
