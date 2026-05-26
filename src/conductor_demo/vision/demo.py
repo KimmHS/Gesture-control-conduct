@@ -7,7 +7,7 @@ from typing import Any
 
 import numpy as np
 
-from conductor_demo.app.state import AppState, CalibrationState, DynamicsState, PlaybackState
+from conductor_demo.app.state import AppState, CalibrationState, DynamicsState, HandRoleState, PlaybackState, TempoState
 from conductor_demo.config.defaults import ControlsConfig, DynamicsConfig, MotionConfig, MusicConfig, UIConfig, VisionConfig
 from conductor_demo.motion.buffer import MotionBuffer, MotionSample
 from conductor_demo.motion.dynamics import DynamicsEstimator
@@ -15,7 +15,7 @@ from conductor_demo.music.controller import MusicController
 from conductor_demo.ui.controls import FallbackControls
 from conductor_demo.ui.overlay import OverlayRenderer
 from conductor_demo.vision.camera import CameraStream
-from conductor_demo.vision.tracker import HandTracker
+from conductor_demo.vision.tracker import HandTracker, TrackingResult, TrackedHand
 
 
 LOGGER = logging.getLogger(__name__)
@@ -64,6 +64,7 @@ class TrackingDemo:
             model_complexity=vision.model_complexity,
             hand_confidence_threshold=vision.hand_confidence_threshold,
             min_hand_scale_px=vision.min_hand_scale_px,
+            swap_left_right_labels=vision.swap_left_right_labels,
         )
         self.motion = MotionBuffer(maxlen=motion.buffer_size)
         self.dynamics = DynamicsEstimator(
@@ -128,18 +129,19 @@ class TrackingDemo:
     def _run_self_test(self) -> None:
         frame = np.zeros((self.vision.frame_height, self.vision.frame_width, 3), dtype=np.uint8)
         tracking = self.tracker.process(frame, timestamp=time.monotonic())
+        source_hand = self._motion_source_hand(tracking)
         self.last_dynamics = self.dynamics.update(
             motion_buffer=self.motion,
             timestamp=time.monotonic(),
-            tracking_ok=tracking.tracking_ok,
-            hand_scale_px=tracking.hand_scale_px,
+            tracking_ok=bool(source_hand and source_hand.tracking_ok),
+            hand_scale_px=source_hand.hand_scale_px if source_hand is not None else None,
         )
         self.music.set_volume(self.last_dynamics.volume)
         debug_frame = self.overlay.draw_debug(
             frame=frame,
             tracking=tracking,
             motion_buffer=self.motion,
-            app_state=self._snapshot_state(tracking.tracking_ok, tracking.active_hand),
+            app_state=self._snapshot_state(tracking),
             trail_length=self.motion_config.trail_length,
         )
         LOGGER.info("Self-test tracker status: %s", self.tracker.describe())
@@ -170,15 +172,22 @@ class TrackingDemo:
                 LOGGER.info("Camera reopened successfully.")
                 continue
             tracking = self.tracker.process(packet.frame, timestamp=packet.timestamp)
-            if tracking.mode == "live" and tracking.tracking_ok and tracking.wrist_px and tracking.raw_wrist_px:
+            source_hand = self._motion_source_hand(tracking)
+            if (
+                source_hand is not None
+                and source_hand.mode == "live"
+                and source_hand.tracking_ok
+                and source_hand.wrist_px
+                and source_hand.raw_wrist_px
+            ):
                 self.motion.append(
                     MotionSample(
-                        x=tracking.wrist_px[0],
-                        y=tracking.wrist_px[1],
+                        x=source_hand.wrist_px[0],
+                        y=source_hand.wrist_px[1],
                         timestamp=packet.timestamp,
-                        confidence=tracking.confidence,
-                        raw_x=tracking.raw_wrist_px[0],
-                        raw_y=tracking.raw_wrist_px[1],
+                        confidence=source_hand.confidence,
+                        raw_x=source_hand.raw_wrist_px[0],
+                        raw_y=source_hand.raw_wrist_px[1],
                         is_live=True,
                     )
                 )
@@ -186,16 +195,16 @@ class TrackingDemo:
             self.last_dynamics = self.dynamics.update(
                 motion_buffer=self.motion,
                 timestamp=packet.timestamp,
-                tracking_ok=tracking.tracking_ok,
-                hand_scale_px=tracking.hand_scale_px,
-                freeze_output=tracking.mode == "hold",
+                tracking_ok=bool(source_hand and source_hand.tracking_ok),
+                hand_scale_px=source_hand.hand_scale_px if source_hand is not None else None,
+                freeze_output=bool(source_hand and source_hand.mode == "hold"),
             )
             self.music.set_volume(self.last_dynamics.volume)
             frame = self.overlay.draw_debug(
                 frame=packet.frame,
                 tracking=tracking,
                 motion_buffer=self.motion,
-                app_state=self._snapshot_state(tracking.tracking_ok, tracking.active_hand),
+                app_state=self._snapshot_state(tracking),
                 trail_length=self.motion_config.trail_length,
             )
             cv2.imshow(self.ui.window_name, frame)
@@ -246,10 +255,15 @@ class TrackingDemo:
             return False
         return False
 
-    def _snapshot_state(self, tracking_ok: bool, active_hand: str | None) -> AppState:
+    def _snapshot_state(self, tracking: TrackingResult) -> AppState:
+        right_hand_state = self._role_state(tracking.tempo_hand, "Right")
+        cue_hand_state = self._role_state(tracking.cue_hand, "Left")
         return AppState(
-            tracking_ok=tracking_ok,
-            active_hand=active_hand,
+            tracking_ok=tracking.tracking_ok,
+            active_hand=tracking.active_hand,
+            tempo_hand=right_hand_state,
+            dynamics_hand=self._role_state(tracking.tempo_hand, "Right"),
+            cue_hand=cue_hand_state,
             playback=PlaybackState(
                 mode=self.music.state,
                 is_playing=self.music.is_playing,
@@ -261,6 +275,10 @@ class TrackingDemo:
                 duration_seconds=self.music.duration_seconds,
                 status_text=self.music.status_text,
                 status_detail=self.music.status_detail,
+            ),
+            tempo=TempoState(
+                rate=self.music.playback_rate,
+                raw_rate=self.music.playback_rate,
             ),
             dynamics=DynamicsState(
                 intensity=self.last_dynamics.intensity,
@@ -276,6 +294,32 @@ class TrackingDemo:
             fallback_hint=self.controls.describe(),
         )
 
+    def _motion_source_hand(self, tracking: TrackingResult) -> TrackedHand | None:
+        if tracking.tempo_hand is not None and tracking.tempo_hand.mode != "lost":
+            return tracking.tempo_hand
+        if tracking.cue_hand is not None and tracking.cue_hand.mode != "lost":
+            return tracking.cue_hand
+        return None
+
+    def _role_state(self, hand: TrackedHand | None, fallback_label: str) -> HandRoleState:
+        if hand is None:
+            return HandRoleState(label=fallback_label)
+        if hand.mode == "live" and hand.tracking_ok:
+            status = "TRACKING"
+        elif hand.mode == "hold":
+            status = "HOLD"
+        elif hand.mode == "live":
+            status = "LOW CONF"
+        else:
+            status = "SEARCHING"
+        return HandRoleState(
+            label=hand.label,
+            mode=hand.mode,
+            tracking_ok=hand.tracking_ok,
+            confidence=hand.confidence,
+            status_text=status,
+        )
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Standalone webcam tracking demo")
@@ -286,6 +330,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--self-test", action="store_true", help="Run one synthetic frame without opening the webcam")
     parser.add_argument("--verbose", action="store_true", help="Enable debug logging")
     parser.add_argument("--no-mirror", action="store_true", help="Disable mirror mode")
+    parser.add_argument(
+        "--no-swap-hands",
+        action="store_true",
+        help="Keep MediaPipe's original left/right labels without swapping them",
+    )
     parser.add_argument("--hide-landmarks", action="store_true", help="Hide landmark dots in the debug overlay")
     return parser
 
@@ -304,6 +353,7 @@ def main() -> int:
         frame_width=args.frame_width,
         frame_height=args.frame_height,
         mirror=not args.no_mirror,
+        swap_left_right_labels=not args.no_swap_hands,
     )
     motion = MotionConfig()
     dynamics = DynamicsConfig()

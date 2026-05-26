@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from conductor_demo.music.midi_backend import MidiPlaybackBackend
 from conductor_demo.music.wave_backend import WavePlaybackBackend
 
 
 class MusicController:
-    """Demo-safe music controller for one WAV track."""
+    """Demo-safe music controller for one WAV or MIDI track."""
 
     STOPPED = "stopped"
     PLAYING = "playing"
@@ -38,7 +39,7 @@ class MusicController:
         self.playback_rate = 1.0
         self.track_path = self._resolve_track_path(demo_track_path)
         self.volume = self.default_volume
-        self.backend: WavePlaybackBackend | None = None
+        self.backend: WavePlaybackBackend | MidiPlaybackBackend | None = None
         self._state = self.STOPPED
         self._last_error: str | None = None
         self._rebuild_backend()
@@ -59,11 +60,13 @@ class MusicController:
 
     @property
     def track_name(self) -> str:
+        if self.backend is not None and hasattr(self.backend, "track_name"):
+            return self.backend.track_name
         return self.track_path.name
 
     @property
     def duration_seconds(self) -> float:
-        return self.backend.track.duration_seconds if self.backend is not None else 0.0
+        return self.backend.duration_seconds if self.backend is not None else 0.0
 
     @property
     def position_seconds(self) -> float:
@@ -72,6 +75,22 @@ class MusicController:
     @property
     def current_bpm(self) -> float:
         return self.base_bpm * self.playback_rate
+
+    @property
+    def supports_group_control(self) -> bool:
+        return self.backend is not None and hasattr(self.backend, "group_labels")
+
+    @property
+    def group_labels(self) -> tuple[str, ...]:
+        if self.supports_group_control and self.backend is not None:
+            return tuple(self.backend.group_labels)
+        return ()
+
+    @property
+    def active_group_indices(self) -> tuple[int, ...]:
+        if self.supports_group_control and self.backend is not None:
+            return tuple(sorted(self.backend.active_group_indices))
+        return ()
 
     @property
     def status_text(self) -> str:
@@ -86,16 +105,17 @@ class MusicController:
 
     @property
     def status_detail(self) -> str:
+        cue_hint = " Q cue toggle, A all on." if self.supports_group_control else ""
         state = self.state
         if state == self.PLAYING:
-            return "Manual fallback: P pause, Space toggle, R reset"
+            return f"Manual fallback: P pause, Space toggle, R reset.{cue_hint}".strip()
         if state == self.PAUSED:
-            return "Paused. Press G or Space to resume, S to restart"
+            return f"Paused. Press G or Space to resume, S to restart.{cue_hint}".strip()
         if state == self.ENDED:
-            return "Song ended. Press S or Space to replay"
+            return f"Song ended. Press S or Space to replay.{cue_hint}".strip()
         if state == self.ERROR:
             return f"Audio issue. Press R to recover. {self._last_error or ''}".strip()
-        return "Ready. Press S or Space to start playback"
+        return f"Ready. Press S or Space to start playback.{cue_hint}".strip()
 
     def play(self) -> None:
         if not self._ensure_backend():
@@ -156,6 +176,20 @@ class MusicController:
         self._safe_call("restore playback rate", lambda: self.backend.set_rate(self.playback_rate))
         self._safe_call("restore playback volume", self._apply_backend_volume)
 
+    def toggle_group(self, group_index: int) -> bool | None:
+        if not self.supports_group_control or self.backend is None:
+            return None
+        try:
+            return self.backend.toggle_group(group_index)
+        except Exception as exc:
+            self._set_error(RuntimeError(f"toggle MIDI group failed: {exc}"))
+            return None
+
+    def activate_all_groups(self) -> bool | None:
+        if not self.supports_group_control or self.backend is None:
+            return None
+        return self._safe_call("enable all MIDI groups", self.backend.activate_all_groups)
+
     def close(self) -> None:
         if self.backend is None:
             return
@@ -187,7 +221,10 @@ class MusicController:
                 pass
 
         try:
-            self.backend = WavePlaybackBackend(self.track_path)
+            if self.track_path.suffix.lower() in {".mid", ".midi"}:
+                self.backend = MidiPlaybackBackend(self.track_path)
+            else:
+                self.backend = WavePlaybackBackend(self.track_path)
             self.backend.set_rate(self.playback_rate)
             self._apply_backend_volume()
             self._state = self.STOPPED
@@ -209,7 +246,10 @@ class MusicController:
     def _apply_backend_volume(self) -> None:
         if self.backend is None:
             return
-        normalized = (self.volume - self.min_volume) / (self.max_volume - self.min_volume)
+        if isinstance(self.backend, MidiPlaybackBackend):
+            normalized = self.volume
+        else:
+            normalized = (self.volume - self.min_volume) / (self.max_volume - self.min_volume)
         self.backend.set_volume(normalized)
 
     def _safe_call(self, label: str, operation, success_state: str | None = None) -> bool:

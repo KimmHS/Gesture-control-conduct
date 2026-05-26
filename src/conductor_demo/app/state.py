@@ -18,11 +18,47 @@ class PlaybackState:
 
 
 @dataclass(slots=True)
+class TempoState:
+    rate: float = 1.0
+    raw_rate: float = 1.0
+    motion_energy_px: float = 0.0
+    floor_px: float = 0.0
+    ceiling_px: float = 1.0
+    normalized_motion: float = 0.0
+
+
+@dataclass(slots=True)
 class DynamicsState:
     intensity: float = 0.0
     raw_intensity: float = 0.0
     span_px: float = 0.0
     reference_span_px: float = 1.0
+
+
+@dataclass(slots=True)
+class HandRoleState:
+    label: str = "-"
+    mode: str = "lost"
+    tracking_ok: bool = False
+    confidence: float = 0.0
+    status_text: str = "SEARCHING"
+
+
+@dataclass(slots=True)
+class CueState:
+    enabled: bool = True
+    tracking_ok: bool = False
+    visible: bool = False
+    selected_index: int | None = None
+    selected_label: str = "-"
+    active_indices: tuple[int, ...] = ()
+    pending_index: int | None = None
+    pending_label: str | None = None
+    selection_progress: float = 0.0
+    cue_x_px: float | None = None
+    frame_width: int = 0
+    slot_count: int = 5
+    labels: tuple[str, ...] = ("Inst 1", "Inst 2", "Inst 3", "Inst 4", "Inst 5")
 
 
 @dataclass(slots=True)
@@ -46,7 +82,12 @@ class CalibrationState:
 class AppState:
     tracking_ok: bool = False
     active_hand: str | None = None
+    tempo_hand: HandRoleState = field(default_factory=lambda: HandRoleState(label="Right"))
+    dynamics_hand: HandRoleState = field(default_factory=lambda: HandRoleState(label="Right"))
+    cue_hand: HandRoleState = field(default_factory=lambda: HandRoleState(label="Left"))
     playback: PlaybackState = field(default_factory=PlaybackState)
+    tempo: TempoState = field(default_factory=TempoState)
     dynamics: DynamicsState = field(default_factory=DynamicsState)
+    cue: CueState = field(default_factory=CueState)
     calibration: CalibrationState = field(default_factory=CalibrationState)
     fallback_hint: str = "S play | P pause | G resume | Space toggle | R reset | Esc quit"

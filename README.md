@@ -1,14 +1,15 @@
 # Conductor Demo
 
-Webcam-based conducting demo with live hand tracking, motion-driven dynamics, and a single demo-song playback backend.
+Webcam-based conducting demo with split-hand gesture control and a single demo-song playback backend.
 
 Current scope:
 - modular package layout for `vision`, `motion`, `music`, `ui`, `config`, and `app`
 - OpenCV webcam capture
 - MediaPipe hand tracking
-- stable main-hand wrist extraction for trajectory-based control
-- smoothing, confidence handling, and rolling motion buffer
-- motion-driven dynamics estimation
+- stable left/right wrist tracking with short hold recovery
+- separate motion buffers for right-hand tempo and left-hand dynamics
+- right-hand tempo estimation from recent motion energy
+- left-hand dynamics estimation from recent motion span
 - one-song WAV playback backend with play/pause/resume/reset, tempo, and volume control
 - lightweight debug overlay
 - simple calibration hook and keyboard fallback controls
@@ -59,8 +60,8 @@ Controls:
 - `G`: resume playback
 - `Space`: safe pause / resume toggle
 - `R`: safe reset and playback recovery while keeping the last completed calibration
-- `C`: run a short calibration for neutral pose and comfortable motion range
-- `[` / `]`: decrease / increase playback tempo
+- `C`: run a short split-hand calibration for right-hand tempo and left-hand dynamics
+- `[` / `]`: decrease / increase tempo trim on top of gesture tempo
 - `Esc`: quit
 
 Playback safety:
@@ -70,8 +71,8 @@ Playback safety:
 - if gesture cue controls are added later, they should remain secondary to these manual keys
 
 Calibration:
-- press `C`, hold your hand in a relaxed neutral pose for about 1 second, then conduct naturally for about 2 seconds
-- calibration estimates your baseline wrist position, comfortable motion span, dynamics range, and tempo motion gate
+- press `C`, show both hands, hold a relaxed neutral pose for about 1 second, then conduct naturally for about 2 seconds
+- calibration estimates left-hand dynamics span plus right-hand tempo motion gate
 - you can recalibrate at any time during the demo; the previous calibration stays active until the new one finishes
 
 ## Structure
@@ -86,6 +87,8 @@ src/conductor_demo/
   vision/
 ```
 
-The current entrypoint opens the webcam, tracks the most stable conducting hand, stores recent wrist positions, and renders a debug overlay.
-Dynamics currently come from recent wrist-motion span and are mapped to playback volume.
-Tempo control is wired to playback rate and can already be tested with the keyboard fallback controls.
+The current entrypoint opens the webcam, tracks both hands, and assigns stable roles:
+- right hand: tempo -> playback rate
+- left hand: dynamics -> playback volume
+
+Gesture tempo remains recoverable with manual `[` / `]` tempo trim, and transport remains on keyboard fallback controls for demo safety.

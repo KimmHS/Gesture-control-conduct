@@ -9,6 +9,8 @@ class FallbackControls:
         "pause": "pause",
         "resume": "resume",
         "pause_resume_toggle": "toggle",
+        "cue_toggle_selected": "cue",
+        "cue_enable_all": "all",
         "reset": "reset",
         "calibrate": "calibrate",
         "tempo_down": "tempo-",

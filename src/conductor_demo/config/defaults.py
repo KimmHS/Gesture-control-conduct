@@ -9,6 +9,7 @@ class VisionConfig:
     frame_width: int = 1280
     frame_height: int = 720
     mirror: bool = True
+    swap_left_right_labels: bool = True
     camera_open_retries: int = 3
     camera_reopen_retries: int = 2
     camera_retry_delay_seconds: float = 0.4
@@ -40,6 +41,18 @@ class DynamicsConfig:
 
 
 @dataclass(slots=True)
+class TempoConfig:
+    window_seconds: float = 0.32
+    min_samples: int = 4
+    smoothing_alpha: float = 0.32
+    idle_smoothing_alpha: float = 0.12
+    confidence_floor: float = 0.5
+    motion_floor_hand_scales: float = 0.85
+    motion_ceiling_hand_scales: float = 3.2
+    output_deadband: float = 0.005
+
+
+@dataclass(slots=True)
 class CalibrationConfig:
     enabled: bool = True
     hold_seconds: float = 1.0
@@ -49,20 +62,21 @@ class CalibrationConfig:
     min_motion_span_px: float = 90.0
     min_motion_span_hand_scales: float = 4.2
     dynamics_span_multiplier: float = 1.05
-    tempo_motion_floor_ratio: float = 0.18
-    tempo_motion_ceiling_ratio: float = 0.68
+    tempo_motion_floor_ratio: float = 0.14
+    tempo_motion_ceiling_ratio: float = 0.5
+    tempo_window_seconds: float = 0.32
 
 
 @dataclass(slots=True)
 class MusicConfig:
-    demo_track_path: str = "assets/audio/demo_song.wav"
+    demo_track_path: str = "assets/MIDI/tchaikovsky_nutcracker_suite_march_71a_2_(c)kirschbaum.mid"
     base_bpm: float = 120.0
     default_volume: float = 0.5
     min_volume: float = 0.2
     max_volume: float = 1.0
-    min_rate: float = 0.85
-    max_rate: float = 1.15
-    rate_step: float = 0.04
+    min_rate: float = 0.72
+    max_rate: float = 1.38
+    rate_step: float = 0.06
 
 
 @dataclass(slots=True)
@@ -73,11 +87,22 @@ class UIConfig:
 
 
 @dataclass(slots=True)
+class CueingConfig:
+    enabled: bool = True
+    slot_count: int = 5
+    selection_hold_seconds: float = 0.2
+    boundary_margin_ratio: float = 0.12
+    labels: tuple[str, ...] = ("Hi Winds", "Lo Winds", "Horns+Tpt", "Brass+Perc", "Strings")
+
+
+@dataclass(slots=True)
 class ControlsConfig:
     play_from_start: str = "s"
     pause: str = "p"
     resume: str = "g"
     pause_resume_toggle: str = "space"
+    cue_toggle_selected: str = "q"
+    cue_enable_all: str = "a"
     reset: str = "r"
     calibrate: str = "c"
     tempo_down: str = "["
@@ -90,6 +115,8 @@ class ControlsConfig:
             self.pause: "pause",
             self.resume: "resume",
             self.pause_resume_toggle: "pause_resume_toggle",
+            self.cue_toggle_selected: "cue_toggle_selected",
+            self.cue_enable_all: "cue_enable_all",
             self.reset: "reset",
             self.calibrate: "calibrate",
             self.tempo_down: "tempo_down",
@@ -104,7 +131,9 @@ class AppConfig:
     vision: VisionConfig = field(default_factory=VisionConfig)
     motion: MotionConfig = field(default_factory=MotionConfig)
     dynamics: DynamicsConfig = field(default_factory=DynamicsConfig)
+    tempo: TempoConfig = field(default_factory=TempoConfig)
     calibration: CalibrationConfig = field(default_factory=CalibrationConfig)
     music: MusicConfig = field(default_factory=MusicConfig)
     ui: UIConfig = field(default_factory=UIConfig)
+    cueing: CueingConfig = field(default_factory=CueingConfig)
     controls: ControlsConfig = field(default_factory=ControlsConfig)
