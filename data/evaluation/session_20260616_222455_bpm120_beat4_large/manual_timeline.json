@@ -1,0 +1,109 @@
+{
+  "session_name": "session_20260616_222455_bpm120_beat4_large",
+  "applied_at": "2026-06-16T22:40:45",
+  "time_unit": "seconds_from_recording_start",
+  "raw_user_events": [
+    {
+      "time": 0.0,
+      "bpm": 100.0,
+      "meter_beats": 2,
+      "dynamics_condition": "large",
+      "note": "initial label; user wrote first 5 seconds, next concrete change at 6 seconds"
+    },
+    {
+      "time": 6.0,
+      "meter_beats": 3
+    },
+    {
+      "time": 10.0,
+      "dynamics_condition": "small"
+    },
+    {
+      "time": 14.0,
+      "meter_beats": 4,
+      "dynamics_condition": "large"
+    },
+    {
+      "time": 22.0,
+      "bpm": 120.0
+    },
+    {
+      "time": 33.0,
+      "dynamics_condition": "small",
+      "note": "ambiguous because immediately followed by 3-beat large without another timestamp"
+    },
+    {
+      "time": 33.0,
+      "meter_beats": 3,
+      "dynamics_condition": "large",
+      "note": "applied state from 33 seconds"
+    },
+    {
+      "time": 49.0,
+      "meter_beats": 2
+    },
+    {
+      "time": 54.0,
+      "bpm": 80.0
+    }
+  ],
+  "applied_segments": [
+    {
+      "start": 0.0,
+      "end": 6.0,
+      "bpm": 100.0,
+      "meter_beats": 2,
+      "dynamics_condition": "large"
+    },
+    {
+      "start": 6.0,
+      "end": 10.0,
+      "bpm": 100.0,
+      "meter_beats": 3,
+      "dynamics_condition": "large"
+    },
+    {
+      "start": 10.0,
+      "end": 14.0,
+      "bpm": 100.0,
+      "meter_beats": 3,
+      "dynamics_condition": "small"
+    },
+    {
+      "start": 14.0,
+      "end": 22.0,
+      "bpm": 100.0,
+      "meter_beats": 4,
+      "dynamics_condition": "large"
+    },
+    {
+      "start": 22.0,
+      "end": 33.0,
+      "bpm": 120.0,
+      "meter_beats": 4,
+      "dynamics_condition": "large"
+    },
+    {
+      "start": 33.0,
+      "end": 49.0,
+      "bpm": 120.0,
+      "meter_beats": 3,
+      "dynamics_condition": "large"
+    },
+    {
+      "start": 49.0,
+      "end": 54.0,
+      "bpm": 120.0,
+      "meter_beats": 2,
+      "dynamics_condition": "large"
+    },
+    {
+      "start": 54.0,
+      "end": null,
+      "bpm": 80.0,
+      "meter_beats": 2,
+      "dynamics_condition": "large"
+    }
+  ],
+  "note": "33-second small event was followed by 3-beat large without a separate timestamp; applied frame labels use 3-beat large from 33 seconds onward."
+}

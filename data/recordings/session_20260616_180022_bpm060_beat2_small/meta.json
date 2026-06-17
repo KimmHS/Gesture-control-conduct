@@ -1,0 +1,112 @@
+{
+  "session_name": "session_20260616_180022_bpm060_beat2_small",
+  "dataset_version": "right_conducting_v0",
+  "csv_path": "data/recordings/session_20260616_180022_bpm060_beat2_small.csv",
+  "raw_video_path": "raw_video.mp4",
+  "bpm_target": 60.0,
+  "meter_beats": 2,
+  "dynamics_condition": "small",
+  "target_seconds": 60,
+  "start_beat_in_bar": 1,
+  "camera_framing": "upper_body_with_both_shoulders",
+  "model_input": "right_shoulder_right_elbow_right_wrist_with_reference_joints",
+  "left_side_policy": "left_shoulder_reference_only_no_left_hand_control_labels",
+  "frame_count": 900,
+  "duration_seconds": 59.995903,
+  "fps_estimate": 14.984,
+  "pose33_shape": [
+    900,
+    33,
+    4
+  ],
+  "pose17_shape": [
+    900,
+    17,
+    3
+  ],
+  "h36m_names": [
+    "pelvis",
+    "right_hip",
+    "right_knee",
+    "right_ankle",
+    "left_hip",
+    "left_knee",
+    "left_ankle",
+    "spine",
+    "shoulder_center",
+    "neck",
+    "head",
+    "left_shoulder",
+    "left_elbow",
+    "left_wrist",
+    "right_shoulder",
+    "right_elbow",
+    "right_wrist"
+  ],
+  "right_arm_h36m_indices": [
+    14,
+    15,
+    16
+  ],
+  "left_shoulder_h36m_index": 11,
+  "masked_keep_indices": [
+    8,
+    9,
+    11,
+    14,
+    15,
+    16
+  ],
+  "right_rule_feature_names": [
+    "wrist_vx",
+    "wrist_vy",
+    "wrist_speed",
+    "shoulder_wrist_radius",
+    "elbow_angle_rad",
+    "right_arm_valid"
+  ],
+  "bpm_classes": [
+    60,
+    80,
+    100,
+    120,
+    140,
+    160
+  ],
+  "window_frames": 120,
+  "stride_frames": 6,
+  "recommended_augmentation": {
+    "name": "recommended_v0",
+    "root": "recommended_augmented_v0",
+    "window_offsets": [
+      0,
+      2,
+      4
+    ],
+    "operations": [
+      "window_start_offset",
+      "coordinate_jitter",
+      "smooth_motion_noise",
+      "confidence_dropout",
+      "translation",
+      "scale_jitter",
+      "small_rotation"
+    ],
+    "label_policy": "Label-preserving only. Tempo and dynamics labels are kept unchanged. Temporal stretch, amplitude scaling, and horizontal flip are excluded."
+  },
+  "model_input_policy": "Use pose_right_h36m_masked.npy with H36M17 shape and confidence 0 for non-right-arm joints. Left shoulder is retained only as a normalization reference.",
+  "files": {
+    "pose_33_mediapipe": "pose_33_mediapipe.npy",
+    "pose_17_h36m": "pose_17_h36m.npy",
+    "pose_right_h36m_masked": "pose_right_h36m_masked.npy",
+    "right_arm_3joints": "right_arm_3joints.npy",
+    "right_rule_features": "right_rule_features.npy",
+    "tempo_augmented_15f": "tempo_augmented_15f.npy",
+    "labels_tempo_augmented_15f": "labels_tempo_augmented_15f.jsonl",
+    "recommended_augmented_v0_root": "recommended_augmented_v0",
+    "recommended_augmented_v0_samples": "pose_right_h36m_masked_windows.npy",
+    "recommended_augmented_v0_labels": "labels_recommended_augmented_windows.jsonl",
+    "labels_frame": "labels_frame.jsonl",
+    "labels_window": "labels_window.jsonl"
+  }
+}

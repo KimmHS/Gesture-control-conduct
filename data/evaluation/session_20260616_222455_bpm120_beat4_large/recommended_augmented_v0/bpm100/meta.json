@@ -1,0 +1,25 @@
+{
+  "session_name": "session_20260616_222455_bpm120_beat4_large",
+  "augmentation_set": "recommended_v0",
+  "bpm_group": "bpm100",
+  "sample_count": 135,
+  "sample_shape": [
+    135,
+    120,
+    17,
+    3
+  ],
+  "sample_file": "pose_right_h36m_masked_windows.npy",
+  "label_file": "labels_recommended_augmented_windows.jsonl",
+  "operations": [
+    "window_start_offset",
+    "coordinate_jitter",
+    "smooth_motion_noise",
+    "confidence_dropout",
+    "translation",
+    "scale_jitter",
+    "small_rotation"
+  ],
+  "label_policy": "tempo and dynamics labels are preserved; no temporal stretch, amplitude scaling, or horizontal flip",
+  "manual_relabel_source": "manual_timeline_segments"
+}
