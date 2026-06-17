@@ -1,0 +1,136 @@
+{
+  "version": "right_conducting_devset_requirements_v0",
+  "default_roots": {
+    "static_root": "dataset/static_variants_80",
+    "transition_root": "dataset/transitions"
+  },
+  "required_original_artifacts": [
+    "meta.json",
+    "labels_frame.jsonl",
+    "labels_window.jsonl",
+    "pose_right_h36m_masked.npy",
+    "right_rule_features.npy"
+  ],
+  "gate": {
+    "p0_complete_required_before_next_sweep": true,
+    "static_80_recall_threshold": 0.6,
+    "held_transition_80_recall_threshold_after_margin_3s": 0.5,
+    "gain_acc_threshold": 0.8
+  },
+  "static_cases": [
+    {
+      "priority": "P0",
+      "bpm": 80,
+      "meter": 2,
+      "dynamics": "large",
+      "variant": "fixed camera high arm",
+      "reason": "80 recall failed in transition stress."
+    },
+    {
+      "priority": "P0",
+      "bpm": 80,
+      "meter": 2,
+      "dynamics": "small",
+      "variant": "fixed camera high arm",
+      "reason": "Check gain-invariant 80 recognition."
+    },
+    {
+      "priority": "P0",
+      "bpm": 80,
+      "meter": 3,
+      "dynamics": "large",
+      "variant": "fixed camera low arm",
+      "reason": "Separate meter shift from tempo."
+    },
+    {
+      "priority": "P0",
+      "bpm": 80,
+      "meter": 3,
+      "dynamics": "small",
+      "variant": "fixed camera low arm",
+      "reason": "Separate meter shift from tempo."
+    }
+  ],
+  "transition_cases": [
+    {
+      "priority": "P0",
+      "source_bpm": 120,
+      "target_bpm": 80,
+      "return_bpm": 120,
+      "meter": 2,
+      "dynamics": "large",
+      "reason": "Check 80 tail after down-transition."
+    },
+    {
+      "priority": "P0",
+      "source_bpm": 120,
+      "target_bpm": 80,
+      "return_bpm": 120,
+      "meter": 2,
+      "dynamics": "small",
+      "reason": "Check 80 tail after down-transition."
+    },
+    {
+      "priority": "P0",
+      "source_bpm": 120,
+      "target_bpm": 80,
+      "return_bpm": 120,
+      "meter": 3,
+      "dynamics": "large",
+      "reason": "Check 80 tail after down-transition."
+    },
+    {
+      "priority": "P0",
+      "source_bpm": 120,
+      "target_bpm": 80,
+      "return_bpm": 120,
+      "meter": 3,
+      "dynamics": "small",
+      "reason": "Check 80 tail after down-transition."
+    },
+    {
+      "priority": "P1",
+      "source_bpm": 100,
+      "target_bpm": 80,
+      "return_bpm": 100,
+      "meter": 3,
+      "dynamics": "large",
+      "reason": "Check smaller down-transition."
+    },
+    {
+      "priority": "P1",
+      "source_bpm": 100,
+      "target_bpm": 80,
+      "return_bpm": 100,
+      "meter": 3,
+      "dynamics": "small",
+      "reason": "Check smaller down-transition."
+    },
+    {
+      "priority": "P2",
+      "source_bpm": 80,
+      "target_bpm": 120,
+      "return_bpm": 80,
+      "meter": 3,
+      "dynamics": "large",
+      "reason": "Up-transition comparison."
+    },
+    {
+      "priority": "P2",
+      "source_bpm": 80,
+      "target_bpm": 120,
+      "return_bpm": 80,
+      "meter": 3,
+      "dynamics": "small",
+      "reason": "Up-transition comparison."
+    }
+  ],
+  "notes": [
+    "Static variant matching is based on bpm, meter, and dynamics metadata; keep camera and distance fixed during capture.",
+    "Current static 80 v0 scope intentionally uses 2-beat and 3-beat takes only; 4-beat static variants are future scope.",
+    "Transition matching is based on meta.json bpm_schedule, not the session directory name.",
+    "Current transition v0 score scope uses 2-beat and 3-beat takes only; 4-beat transition takes are excluded from score roots.",
+    "A case is present only when metadata matches and required original score artifacts exist.",
+    "Scoring must still exclude eval-local augmentation artifacts."
+  ]
+}

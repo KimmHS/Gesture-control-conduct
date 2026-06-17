@@ -1,0 +1,16 @@
+{
+  "dataset_dir": "outputs/right_conducting/dataset_boundary0p5_shortwin_static80_transitions_24f",
+  "windows_file": "outputs/right_conducting/dataset_boundary0p5_shortwin_static80_transitions_24f/windows_24f_v0.jsonl",
+  "source_zip": "outputs/right_conducting/recordings_staged_static80_transitions.zip",
+  "config": "checkpoint/MB_lite.yaml",
+  "checkpoint": "checkpoint/mb_lite_v0.pt",
+  "device": "cuda:4",
+  "feature_mode": "mean_std_delta",
+  "input_mask_mode": "as_is",
+  "feature_shape": [
+    10640,
+    2048
+  ],
+  "missing_keys": [],
+  "unexpected_keys": []
+}

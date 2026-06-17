@@ -1,0 +1,89 @@
+{
+  "status": "GO",
+  "static_score_json": "outputs/right_conducting/motionbert_devset_static_score_boundary0p5_shortwin_static80_transitions_e120_h512_lr3e3_24f.json",
+  "transition_score_json": "outputs/right_conducting/motionbert_devset_transition_score_boundary0p5_shortwin_static80_transitions_e120_h512_lr3e3_24f.json",
+  "coverage_json": "outputs/right_conducting/devset_edge_case_audit_boundary0p5_shortwin.json",
+  "thresholds": {
+    "min_static_80_recall": 0.6,
+    "min_transition_80_recall": 0.5,
+    "min_gain_acc": 0.8,
+    "transition_margin_seconds": 0.5
+  },
+  "selected_static_margin_seconds": 0.0,
+  "selected_transition_margin_seconds": 0.5,
+  "checks": [
+    {
+      "name": "static_score_present",
+      "value": true,
+      "op": "==",
+      "threshold": true,
+      "passed": true,
+      "detail": "outputs/right_conducting/motionbert_devset_static_score_boundary0p5_shortwin_static80_transitions_e120_h512_lr3e3_24f.json"
+    },
+    {
+      "name": "transition_score_present",
+      "value": true,
+      "op": "==",
+      "threshold": true,
+      "passed": true,
+      "detail": "outputs/right_conducting/motionbert_devset_transition_score_boundary0p5_shortwin_static80_transitions_e120_h512_lr3e3_24f.json"
+    },
+    {
+      "name": "p0_complete",
+      "value": true,
+      "op": "==",
+      "threshold": true,
+      "passed": true,
+      "detail": "required P0 cases present"
+    },
+    {
+      "name": "static_margin0_row_present",
+      "value": true,
+      "op": "==",
+      "threshold": true,
+      "passed": true,
+      "detail": "margin row exists"
+    },
+    {
+      "name": "transition_margin0.5_row_present",
+      "value": true,
+      "op": "==",
+      "threshold": true,
+      "passed": true,
+      "detail": "margin row exists"
+    },
+    {
+      "name": "static_80_recall",
+      "value": 1.0,
+      "op": ">=",
+      "threshold": 0.6,
+      "passed": true,
+      "detail": "support=970"
+    },
+    {
+      "name": "static_gain_acc",
+      "value": 1.0,
+      "op": ">=",
+      "threshold": 0.8,
+      "passed": true,
+      "detail": "static gain_acc"
+    },
+    {
+      "name": "transition_80_recall",
+      "value": 0.8986175115207373,
+      "op": ">=",
+      "threshold": 0.5,
+      "passed": true,
+      "detail": "support=434"
+    },
+    {
+      "name": "transition_gain_acc",
+      "value": 0.9985475671750181,
+      "op": ">=",
+      "threshold": 0.8,
+      "passed": true,
+      "detail": "margin=0.5"
+    }
+  ],
+  "warnings": []
+}

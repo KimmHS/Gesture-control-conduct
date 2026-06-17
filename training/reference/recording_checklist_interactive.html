@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recording Checklist</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f7f7f4;
+      --panel: #ffffff;
+      --text: #1f2428;
+      --muted: #667085;
+      --border: #d6d9dd;
+      --accent: #1f7a5a;
+      --accent-soft: #e6f4ee;
+      --done: #667085;
+      --shadow: rgba(16, 24, 40, 0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #15171a;
+        --panel: #202328;
+        --text: #f2f4f7;
+        --muted: #a4abb8;
+        --border: #343943;
+        --accent: #52c59b;
+        --accent-soft: #19382d;
+        --done: #8c94a3;
+        --shadow: rgba(0, 0, 0, 0.25);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    main {
+      width: min(980px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    header {
+      display: flex;
+      gap: 20px;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 28px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 18px 0 8px;
+      font-size: 15px;
+      color: var(--muted);
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .progress {
+      min-width: 220px;
+    }
+
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 7px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .progress-bar {
+      height: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--panel);
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: var(--accent);
+      transition: width 160ms ease;
+    }
+
+    .section {
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 8px 28px var(--shadow);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px 20px;
+    }
+
+    .guideline-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 18px;
+      margin-top: 10px;
+    }
+
+    .guideline-list div {
+      display: grid;
+      grid-template-columns: 116px minmax(0, 1fr);
+      gap: 10px;
+      padding: 8px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .guideline-list strong {
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .guideline-list span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .item {
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 11px;
+      min-height: 38px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+    }
+
+    .item.done {
+      background: var(--accent-soft);
+      color: var(--done);
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent);
+      flex: 0 0 auto;
+      cursor: pointer;
+    }
+
+    label {
+      display: block;
+      flex: 1 1 260px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .command-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      margin-left: 31px;
+    }
+
+    .command-row code {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: color-mix(in srgb, var(--panel) 82%, var(--border));
+      font: 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .copy-command {
+      min-height: 31px;
+      padding: 0 10px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      vertical-align: 1px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    button {
+      min-height: 34px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: var(--panel);
+      color: var(--text);
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--text);
+      font: 13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      resize: vertical;
+    }
+
+    @media (max-width: 760px) {
+      header {
+        display: block;
+      }
+
+      .progress {
+        margin-top: 16px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .guideline-list {
+        grid-template-columns: 1fr;
+      }
+
+      .command-row {
+        grid-template-columns: 1fr;
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>Recording Checklist</h1>
+        <p>각 take는 60초 기준. 항목별 command는 기본 무음이며, 프로그램에서 R을 눌러 녹화를 시작한다.</p>
+      </div>
+      <div class="progress" aria-live="polite">
+        <div class="progress-text">
+          <span id="progress-label">0 / 0</span>
+          <span id="progress-percent">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      </div>
+    </header>
+
+    <section class="section">
+      <h2>Recording Guidelines</h2>
+      <p>Training set은 현재 완료 상태다. Evaluation은 training과 섞지 않고 별도 폴더에 저장한다.</p>
+      <div class="guideline-list">
+        <div>
+          <strong>Training v0</strong>
+          <span>60 / 80 / 100 / 120 BPM만 사용한다. 140 / 160 BPM은 v0에서 제외한다.</span>
+        </div>
+        <div>
+          <strong>Evaluation</strong>
+          <span>`data/evaluation`에 저장한다. 기준은 100 BPM / 4박 / large이며, 한 take에서 변수 하나만 바꾼다.</span>
+        </div>
+        <div>
+          <strong>Dynamics</strong>
+          <span>크게/작게 비교는 BPM과 박자를 고정하고 large와 small만 바꾼다.</span>
+        </div>
+        <div>
+          <strong>Beat</strong>
+          <span>박자 비교는 BPM과 dynamics를 고정하고 2박 / 3박 / 4박만 바꾼다.</span>
+        </div>
+        <div>
+          <strong>Tempo</strong>
+          <span>속도 비교는 박자와 dynamics를 고정하고 60 / 100 / 120 BPM만 바꾼다.</span>
+        </div>
+        <div>
+          <strong>Camera</strong>
+          <span>상체 전체, 양어깨, 오른팔꿈치, 오른손목이 화면에 들어오게 촬영한다.</span>
+        </div>
+        <div>
+          <strong>Run</strong>
+          <span>명령어는 기본 무음이다. 프로그램 창이 뜨면 R로 시작하고 60초 후 자동 정지한다.</span>
+        </div>
+        <div>
+          <strong>Noise</strong>
+          <span>120 BPM / 2박 / small 세션은 중간 노이즈가 있으므로 학습 전 확인 또는 trim한다.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-section="matrix">
+      <h2>Final Recording Matrix</h2>
+      <p>BPM × 박자 × dynamics 조합을 맞춘다. 중간 dynamics는 rule-based amplitude 추정과 smoothing으로 처리한다.</p>
+      <h3>60 BPM</h3>
+      <div class="grid">
+        <div class="item"><input id="rec-60-2-large" type="checkbox" data-default="true"><label for="rec-60-2-large">60 BPM / 2박 / large / 60초 <span class="tag">session_20260616_174336_bpm060_beat2_large</span></label></div>
+        <div class="item"><input id="rec-60-3-large" type="checkbox" data-default="true"><label for="rec-60-3-large">60 BPM / 3박 / large / 60초 <span class="tag">session_20260616_174510_bpm060_beat3_large</span></label></div>
+        <div class="item"><input id="rec-60-4-large" type="checkbox" data-default="true"><label for="rec-60-4-large">60 BPM / 4박 / large / 60초 <span class="tag">session_20260616_174636_bpm060_beat4_large</span></label></div>
+        <div class="item"><input id="rec-60-2-small" type="checkbox" data-default="true"><label for="rec-60-2-small">60 BPM / 2박 / small / 60초 <span class="tag">session_20260616_180022_bpm060_beat2_small</span></label></div>
+        <div class="item"><input id="rec-60-3-small" type="checkbox" data-default="true"><label for="rec-60-3-small">60 BPM / 3박 / small / 60초 <span class="tag">session_20260616_180143_bpm060_beat3_small</span></label></div>
+        <div class="item"><input id="rec-60-4-small" type="checkbox" data-default="true"><label for="rec-60-4-small">60 BPM / 4박 / small / 60초 <span class="tag">session_20260616_210424_bpm060_beat4_small</span></label></div>
+      </div>
+
+      <h3>80 BPM</h3>
+      <div class="grid">
+        <div class="item"><input id="rec-80-2-large" type="checkbox" data-default="true"><label for="rec-80-2-large">80 BPM / 2박 / large / 60초 <span class="tag">session_20260616_210646_bpm080_beat2_large</span></label></div>
+        <div class="item"><input id="rec-80-3-large" type="checkbox" data-default="true"><label for="rec-80-3-large">80 BPM / 3박 / large / 60초 <span class="tag">session_20260616_210816_bpm080_beat3_large</span></label></div>
+        <div class="item"><input id="rec-80-4-large" type="checkbox" data-default="true"><label for="rec-80-4-large">80 BPM / 4박 / large / 60초 <span class="tag">session_20260616_210936_bpm080_beat4_large</span></label></div>
+        <div class="item"><input id="rec-80-2-small" type="checkbox" data-default="true"><label for="rec-80-2-small">80 BPM / 2박 / small / 60초 <span class="tag">session_20260616_211053_bpm080_beat2_small</span></label></div>
+        <div class="item"><input id="rec-80-3-small" type="checkbox" data-default="true"><label for="rec-80-3-small">80 BPM / 3박 / small / 60초 <span class="tag">session_20260616_211208_bpm080_beat3_small</span></label></div>
+        <div class="item"><input id="rec-80-4-small" type="checkbox" data-default="true"><label for="rec-80-4-small">80 BPM / 4박 / small / 60초 <span class="tag">session_20260616_211325_bpm080_beat4_small</span></label></div>
+      </div>
+
+      <h3>100 BPM</h3>
+      <div class="grid">
+        <div class="item"><input id="rec-100-2-large" type="checkbox" data-default="true"><label for="rec-100-2-large">100 BPM / 2박 / large / 60초 <span class="tag">session_20260616_211510_bpm100_beat2_large</span></label></div>
+        <div class="item"><input id="rec-100-3-large" type="checkbox" data-default="true"><label for="rec-100-3-large">100 BPM / 3박 / large / 60초 <span class="tag">session_20260616_211632_bpm100_beat3_large</span></label></div>
+        <div class="item"><input id="rec-100-4-large" type="checkbox" data-default="true"><label for="rec-100-4-large">100 BPM / 4박 / large / 60초 <span class="tag">session_20260616_211753_bpm100_beat4_large</span></label></div>
+        <div class="item"><input id="rec-100-2-small" type="checkbox" data-default="true"><label for="rec-100-2-small">100 BPM / 2박 / small / 60초 <span class="tag">session_20260616_211918_bpm100_beat2_small</span></label></div>
+        <div class="item"><input id="rec-100-3-small" type="checkbox" data-default="true"><label for="rec-100-3-small">100 BPM / 3박 / small / 60초 <span class="tag">session_20260616_212033_bpm100_beat3_small</span></label></div>
+        <div class="item"><input id="rec-100-4-small" type="checkbox" data-default="true"><label for="rec-100-4-small">100 BPM / 4박 / small / 60초 <span class="tag">session_20260616_212150_bpm100_beat4_small</span></label></div>
+      </div>
+
+      <h3>120 BPM</h3>
+      <div class="grid">
+        <div class="item"><input id="rec-120-2-large" type="checkbox" data-default="true"><label for="rec-120-2-large">120 BPM / 2박 / large / 60초 <span class="tag">session_20260616_003523_bpm120_beat2</span></label></div>
+        <div class="item"><input id="rec-120-3-large" type="checkbox" data-default="true"><label for="rec-120-3-large">120 BPM / 3박 / large / 60초 <span class="tag">session_20260616_005237_bpm120_beat3</span></label></div>
+        <div class="item"><input id="rec-120-4-large" type="checkbox" data-default="true"><label for="rec-120-4-large">120 BPM / 4박 / large / 60초 <span class="tag">session_20260616_005614_bpm120_beat4</span></label></div>
+        <div class="item"><input id="rec-120-2-small" type="checkbox" data-default="true"><label for="rec-120-2-small">120 BPM / 2박 / small / 60초 <span class="tag">session_20260616_212313_bpm120_beat2_small, 중간 노이즈 주의</span></label></div>
+        <div class="item"><input id="rec-120-3-small" type="checkbox" data-default="true"><label for="rec-120-3-small">120 BPM / 3박 / small / 60초 <span class="tag">session_20260616_213424_bpm120_beat3_small</span></label></div>
+        <div class="item"><input id="rec-120-4-small" type="checkbox" data-default="true"><label for="rec-120-4-small">120 BPM / 4박 / small / 60초 <span class="tag">session_20260616_213543_bpm120_beat4_small</span></label></div>
+      </div>
+
+      <h3>Excluded From v0</h3>
+      <p>140 BPM과 160 BPM은 v0 training target에서 제외한다.</p>
+    </section>
+
+    <section class="section">
+      <h2>Actions</h2>
+      <div class="actions">
+        <button class="primary" id="copy-markdown">Copy Markdown</button>
+        <button id="reset-defaults">Reset Defaults</button>
+      </div>
+      <textarea id="markdown-output" readonly aria-label="Markdown output"></textarea>
+    </section>
+  </main>
+
+  <script>
+    const storageKey = "gesture-conduct-recording-checklist-v4";
+    const projectDir = "/Users/jongha/vscode/Gesture-control-conduct";
+    const boxes = Array.from(document.querySelectorAll('input[type="checkbox"]'));
+    const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
+
+    for (const box of boxes) {
+      box.checked = Object.prototype.hasOwnProperty.call(saved, box.id)
+        ? Boolean(saved[box.id])
+        : box.dataset.default === "true";
+      box.addEventListener("change", saveAndRender);
+    }
+
+    addCommandRows();
+
+    document.getElementById("reset-defaults").addEventListener("click", () => {
+      localStorage.removeItem(storageKey);
+      for (const box of boxes) {
+        box.checked = box.dataset.default === "true";
+      }
+      saveAndRender();
+    });
+
+    function addCommandRows() {
+      for (const box of boxes) {
+        const label = document.querySelector(`label[for="${box.id}"]`);
+        const command = makeRunCommand(label.textContent);
+        if (!command) {
+          continue;
+        }
+
+        const row = document.createElement("div");
+        row.className = "command-row";
+
+        const code = document.createElement("code");
+        code.textContent = command;
+
+        const button = document.createElement("button");
+        button.className = "copy-command";
+        button.type = "button";
+        button.textContent = "Copy";
+        button.addEventListener("click", async () => {
+          await navigator.clipboard.writeText(command);
+          button.textContent = "Copied";
+          window.setTimeout(() => {
+            button.textContent = "Copy";
+          }, 900);
+        });
+
+        row.append(code, button);
+        box.closest(".item").append(row);
+      }
+    }
+
+    function makeRunCommand(labelText) {
+      const match = labelText.match(/(\d+)\s+BPM\s*\/\s*([234])박\s*\/\s*(large|small)\s*\/\s*(\d+)초/);
+      if (!match) {
+        return "";
+      }
+      const [, bpm, meter, condition, seconds] = match;
+      return [
+        `cd ${projectDir}`,
+        "conda activate asr",
+        [
+          "python record_data.py",
+          `--bpm ${bpm}`,
+          `--meter ${meter}`,
+          `--dynamics-condition ${condition}`,
+          `--target-seconds ${seconds}`,
+        ].join(" "),
+      ].join(" && ");
+    }
+
+    document.getElementById("copy-markdown").addEventListener("click", async () => {
+      const markdown = makeMarkdown();
+      document.getElementById("markdown-output").value = markdown;
+      await navigator.clipboard.writeText(markdown);
+    });
+
+    function saveAndRender() {
+      const state = {};
+      for (const box of boxes) {
+        state[box.id] = box.checked;
+        box.closest(".item").classList.toggle("done", box.checked);
+      }
+      localStorage.setItem(storageKey, JSON.stringify(state));
+      renderProgress();
+      document.getElementById("markdown-output").value = makeMarkdown();
+    }
+
+    function renderProgress() {
+      const checked = boxes.filter((box) => box.checked).length;
+      const total = boxes.length;
+      const percent = total ? Math.round((checked / total) * 100) : 0;
+      document.getElementById("progress-label").textContent = `${checked} / ${total}`;
+      document.getElementById("progress-percent").textContent = `${percent}%`;
+      document.getElementById("progress-fill").style.width = `${percent}%`;
+    }
+
+    function makeMarkdown() {
+      const lines = ["# Recording Checklist", ""];
+      for (const section of document.querySelectorAll("section[data-section]")) {
+        lines.push(`## ${section.querySelector("h2").textContent}`, "");
+        for (const heading of section.querySelectorAll("h3")) {
+          lines.push(`### ${heading.textContent}`, "");
+          let cursor = heading.nextElementSibling;
+          while (cursor && cursor.tagName !== "H3") {
+            if (cursor.classList.contains("grid")) {
+              appendGrid(lines, cursor);
+            }
+            cursor = cursor.nextElementSibling;
+          }
+        }
+        if (!section.querySelector("h3")) {
+          appendGrid(lines, section);
+        }
+      }
+      return lines.join("\n").trim() + "\n";
+    }
+
+    function appendGrid(lines, root) {
+      for (const box of root.querySelectorAll('input[type="checkbox"]')) {
+        const label = root.querySelector(`label[for="${box.id}"]`);
+        const text = label.textContent.trim().replace(/\s+/g, " ");
+        lines.push(`- [${box.checked ? "x" : " "}] ${text}`);
+      }
+      if (root.querySelector('input[type="checkbox"]')) {
+        lines.push("");
+      }
+    }
+
+    saveAndRender();
+  </script>
+</body>
+</html>

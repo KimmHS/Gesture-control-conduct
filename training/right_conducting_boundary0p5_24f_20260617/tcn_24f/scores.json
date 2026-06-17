@@ -1,0 +1,1402 @@
+{
+  "schema_version": "right_conducting_tcn_quick_probe_v1_precision_f1",
+  "model_type": "causal_tcn_right_arm_pose",
+  "status_scope": "deployment_fit_quick_probe",
+  "roots": "dataset/static_variants_80,dataset/transitions",
+  "output_dir": "outputs/right_conducting/tcn_boundary0p5_shortwin_quick_probe_20260617/24f",
+  "checkpoint": "outputs/right_conducting/tcn_boundary0p5_shortwin_quick_probe_20260617/24f/tcn_conducting_head.pt",
+  "window_frames": 24,
+  "stride_frames": 3,
+  "fps": 15.0,
+  "boundary_jitter_seconds": 0.5,
+  "boundary_filter_policy": "drop train windows whose [start_elapsed_seconds,end_elapsed_seconds] overlaps a transition +/- jitter",
+  "bpm_bins": [
+    60,
+    80,
+    100,
+    120
+  ],
+  "train": {
+    "sample_count": 2346,
+    "session_count": 11,
+    "filter_summary": {
+      "source_window_count": 2528,
+      "selected_count": 2346,
+      "mixed_bpm_excluded_count": 106,
+      "boundary_jitter_seconds": 0.5,
+      "boundary_jitter_excluded_count": 76,
+      "invalid_right_arm_excluded_count": 0,
+      "min_valid_right_arm_ratio": 0.95
+    },
+    "epochs": 35,
+    "batch_size": 256,
+    "hidden_channels": 64,
+    "levels": 4,
+    "kernel_size": 5,
+    "dropout": 0.1,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "final_loss": 0.0073194355238229035,
+    "tempo_class_counts": {
+      "1": 1403,
+      "3": 673,
+      "2": 270
+    },
+    "gain_class_counts": {
+      "1": 1269,
+      "0": 1077
+    }
+  },
+  "score": {
+    "eval_session_count": 11,
+    "margins": [
+      {
+        "transition_margin_seconds": 0.0,
+        "sample_count": 2410,
+        "mixed_bpm_excluded_count": 106,
+        "transition_margin_excluded_count": 12,
+        "raw": {
+          "tempo_acc": 0.9929460580912863,
+          "gain_acc": 1.0,
+          "true_switch_count": 16,
+          "pred_switch_count": 18,
+          "false_switch_count": 3,
+          "false_switches_per_min": 4.049762031589324,
+          "switch_delay_mean_s": 0.16293976332800608,
+          "switch_delay_p90_s": 0.5016923761524978,
+          "missed_switch_count": 0,
+          "tempo_macro_precision": 0.9905303817819822,
+          "tempo_macro_recall": 0.9945753911320625,
+          "tempo_macro_f1": 0.9925348213559664,
+          "tempo_per_class_precision": {
+            "1": 0.9958041958041958,
+            "2": 0.9858156028368794,
+            "3": 0.9899713467048711
+          },
+          "tempo_per_class_recall": {
+            "1": 0.9923344947735192,
+            "2": 1.0,
+            "3": 0.9913916786226685
+          },
+          "tempo_per_class_f1": {
+            "1": 0.9940663176265271,
+            "2": 0.9928571428571429,
+            "3": 0.9906810035842294
+          },
+          "tempo_per_class_support": {
+            "1": 1435,
+            "2": 278,
+            "3": 697
+          },
+          "bpm_mae_window": 0.2489626556634903
+        },
+        "smoothed": {
+          "tempo_acc": 0.9925311203319502,
+          "gain_acc": 1.0,
+          "true_switch_count": 16,
+          "pred_switch_count": 16,
+          "false_switch_count": 2,
+          "false_switches_per_min": 2.699841354392883,
+          "switch_delay_mean_s": 0.20052000991746666,
+          "switch_delay_p90_s": 0.5018535775687418,
+          "missed_switch_count": 0,
+          "tempo_macro_precision": 0.9893521523388559,
+          "tempo_macro_recall": 0.9936223024040288,
+          "tempo_macro_f1": 0.9914682698486385,
+          "tempo_per_class_precision": {
+            "1": 0.9958012596221134,
+            "2": 0.9822695035460993,
+            "3": 0.9899856938483548
+          },
+          "tempo_per_class_recall": {
+            "1": 0.9916376306620209,
+            "2": 0.9964028776978417,
+            "3": 0.9928263988522238
+          },
+          "tempo_per_class_f1": {
+            "1": 0.9937150837988827,
+            "2": 0.9892857142857143,
+            "3": 0.9914040114613181
+          },
+          "tempo_per_class_support": {
+            "1": 1435,
+            "2": 278,
+            "3": 697
+          },
+          "bpm_mae_window": 0.2489626556634903
+        },
+        "per_session": [
+          {
+            "session": "session_20260617_034934_bpm080_beat2_large",
+            "sample_count": 242,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 0,
+              "pred_switch_count": 0,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 242
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_035040_bpm080_beat2_small",
+            "sample_count": 243,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 0,
+              "pred_switch_count": 0,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 243
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_035253_bpm080_beat3_large",
+            "sample_count": 242,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 0,
+              "pred_switch_count": 0,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 242
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_035538_bpm080_beat3_small",
+            "sample_count": 243,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 0,
+              "pred_switch_count": 0,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 243
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_021702_bpm120to120_beat2_large",
+            "sample_count": 206,
+            "smoothed": {
+              "tempo_acc": 0.9951456310679612,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.1001937078351478,
+              "switch_delay_p90_s": 0.18034867410326605,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 0.9964539007092199,
+              "tempo_macro_recall": 0.9924242424242424,
+              "tempo_macro_f1": 0.9944038466762652,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "3": 0.9929078014184397
+              },
+              "tempo_per_class_recall": {
+                "1": 0.9848484848484849,
+                "3": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 0.9923664122137404,
+                "3": 0.9964412811387899
+              },
+              "tempo_per_class_support": {
+                "1": 66,
+                "3": 140
+              },
+              "bpm_mae_window": 0.19417475163936615
+            }
+          },
+          {
+            "session": "session_20260617_021839_bpm120to120_beat2_large",
+            "sample_count": 205,
+            "smoothed": {
+              "tempo_acc": 0.9902439024390244,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.20083009773731497,
+              "switch_delay_p90_s": 0.3614941759271669,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 0.9929078014184397,
+              "tempo_macro_recall": 0.9848484848484849,
+              "tempo_macro_f1": 0.9887362637362638,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "3": 0.9858156028368794
+              },
+              "tempo_per_class_recall": {
+                "1": 0.9696969696969697,
+                "3": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 0.9846153846153847,
+                "3": 0.9928571428571429
+              },
+              "tempo_per_class_support": {
+                "1": 66,
+                "3": 139
+              },
+              "bpm_mae_window": 0.39024388790130615
+            }
+          },
+          {
+            "session": "session_20260617_021943_bpm120to120_beat3_large",
+            "sample_count": 206,
+            "smoothed": {
+              "tempo_acc": 0.970873786407767,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.6020469596628537,
+              "switch_delay_p90_s": 0.6020469596628537,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 0.9668205733920326,
+              "tempo_macro_recall": 0.9668205733920326,
+              "tempo_macro_f1": 0.9668205733920326,
+              "tempo_per_class_precision": {
+                "1": 0.9552238805970149,
+                "3": 0.9784172661870504
+              },
+              "tempo_per_class_recall": {
+                "1": 0.9552238805970149,
+                "3": 0.9784172661870504
+              },
+              "tempo_per_class_f1": {
+                "1": 0.9552238805970149,
+                "3": 0.9784172661870504
+              },
+              "tempo_per_class_support": {
+                "1": 67,
+                "3": 139
+              },
+              "bpm_mae_window": 1.165048599243164
+            }
+          },
+          {
+            "session": "session_20260617_022415_bpm120to120_beat2_small",
+            "sample_count": 207,
+            "smoothed": {
+              "tempo_acc": 0.9951690821256038,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 1,
+              "false_switches_per_min": 1.3476576576576578,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 0.9964539007092199,
+              "tempo_macro_recall": 0.9925373134328358,
+              "tempo_macro_f1": 0.9944612420731543,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "3": 0.9929078014184397
+              },
+              "tempo_per_class_recall": {
+                "1": 0.9850746268656716,
+                "3": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 0.9924812030075187,
+                "3": 0.9964412811387899
+              },
+              "tempo_per_class_support": {
+                "1": 67,
+                "3": 140
+              },
+              "bpm_mae_window": 0.19323670864105225
+            }
+          },
+          {
+            "session": "session_20260617_022517_bpm120to120_beat3_small",
+            "sample_count": 205,
+            "smoothed": {
+              "tempo_acc": 0.9902439024390244,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.20008003201280466,
+              "switch_delay_p90_s": 0.3601440576230484,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 0.9852941176470589,
+              "tempo_macro_recall": 0.9928057553956835,
+              "tempo_macro_f1": 0.9889141250270387,
+              "tempo_per_class_precision": {
+                "1": 0.9705882352941176,
+                "3": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0,
+                "3": 0.9856115107913669
+              },
+              "tempo_per_class_f1": {
+                "1": 0.9850746268656716,
+                "3": 0.9927536231884058
+              },
+              "tempo_per_class_support": {
+                "1": 66,
+                "3": 139
+              },
+              "bpm_mae_window": 0.39024388790130615
+            }
+          },
+          {
+            "session": "session_20260617_023901_bpm100to100_beat3_large",
+            "sample_count": 206,
+            "smoothed": {
+              "tempo_acc": 0.9854368932038835,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 1,
+              "false_switches_per_min": 1.3529411764705883,
+              "switch_delay_mean_s": 0.200668896321071,
+              "switch_delay_p90_s": 0.3612040133779278,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 0.9894366197183099,
+              "tempo_macro_recall": 0.9776119402985075,
+              "tempo_macro_f1": 0.9832115400287957,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "2": 0.9788732394366197
+              },
+              "tempo_per_class_recall": {
+                "1": 0.9552238805970149,
+                "2": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 0.9770992366412213,
+                "2": 0.9893238434163701
+              },
+              "tempo_per_class_support": {
+                "1": 67,
+                "2": 139
+              },
+              "bpm_mae_window": 0.291262149810791
+            }
+          },
+          {
+            "session": "session_20260617_024003_bpm100to100_beat3_small",
+            "sample_count": 205,
+            "smoothed": {
+              "tempo_acc": 0.9853658536585366,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.3003403857705411,
+              "switch_delay_p90_s": 0.380431155309353,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 0.9851648351648352,
+              "tempo_macro_recall": 0.9812513625463266,
+              "tempo_macro_f1": 0.9831732742345892,
+              "tempo_per_class_precision": {
+                "1": 0.9846153846153847,
+                "2": 0.9857142857142858
+              },
+              "tempo_per_class_recall": {
+                "1": 0.9696969696969697,
+                "2": 0.9928057553956835
+              },
+              "tempo_per_class_f1": {
+                "1": 0.9770992366412214,
+                "2": 0.989247311827957
+              },
+              "tempo_per_class_support": {
+                "1": 66,
+                "2": 139
+              },
+              "bpm_mae_window": 0.2926829159259796
+            }
+          }
+        ]
+      },
+      {
+        "transition_margin_seconds": 0.5,
+        "sample_count": 2346,
+        "mixed_bpm_excluded_count": 106,
+        "transition_margin_excluded_count": 76,
+        "raw": {
+          "tempo_acc": 0.9995737425404945,
+          "gain_acc": 1.0,
+          "true_switch_count": 16,
+          "pred_switch_count": 18,
+          "false_switch_count": 1,
+          "false_switches_per_min": 1.3499206771964416,
+          "switch_delay_mean_s": 0.0,
+          "switch_delay_p90_s": 0.0,
+          "missed_switch_count": 0,
+          "tempo_macro_precision": 0.9997625830959165,
+          "tempo_macro_recall": 0.9995047052996533,
+          "tempo_macro_f1": 0.9996334177832106,
+          "tempo_per_class_precision": {
+            "1": 0.9992877492877493,
+            "2": 1.0,
+            "3": 1.0
+          },
+          "tempo_per_class_recall": {
+            "1": 1.0,
+            "2": 1.0,
+            "3": 0.9985141158989599
+          },
+          "tempo_per_class_f1": {
+            "1": 0.9996437477734236,
+            "2": 1.0,
+            "3": 0.9992565055762082
+          },
+          "tempo_per_class_support": {
+            "1": 1403,
+            "2": 270,
+            "3": 673
+          },
+          "bpm_mae_window": 0.017050297930836678
+        },
+        "smoothed": {
+          "tempo_acc": 1.0,
+          "gain_acc": 1.0,
+          "true_switch_count": 16,
+          "pred_switch_count": 16,
+          "false_switch_count": 0,
+          "false_switches_per_min": 0.0,
+          "switch_delay_mean_s": 0.0,
+          "switch_delay_p90_s": 0.0,
+          "missed_switch_count": 0,
+          "tempo_macro_precision": 1.0,
+          "tempo_macro_recall": 1.0,
+          "tempo_macro_f1": 1.0,
+          "tempo_per_class_precision": {
+            "1": 1.0,
+            "2": 1.0,
+            "3": 1.0
+          },
+          "tempo_per_class_recall": {
+            "1": 1.0,
+            "2": 1.0,
+            "3": 1.0
+          },
+          "tempo_per_class_f1": {
+            "1": 1.0,
+            "2": 1.0,
+            "3": 1.0
+          },
+          "tempo_per_class_support": {
+            "1": 1403,
+            "2": 270,
+            "3": 673
+          },
+          "bpm_mae_window": 0.0
+        },
+        "per_session": [
+          {
+            "session": "session_20260617_034934_bpm080_beat2_large",
+            "sample_count": 242,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 0,
+              "pred_switch_count": 0,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 242
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_035040_bpm080_beat2_small",
+            "sample_count": 243,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 0,
+              "pred_switch_count": 0,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 243
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_035253_bpm080_beat3_large",
+            "sample_count": 242,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 0,
+              "pred_switch_count": 0,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 242
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_035538_bpm080_beat3_small",
+            "sample_count": 243,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 0,
+              "pred_switch_count": 0,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 243
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_021702_bpm120to120_beat2_large",
+            "sample_count": 197,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 62,
+                "3": 135
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_021839_bpm120to120_beat2_large",
+            "sample_count": 196,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 62,
+                "3": 134
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_021943_bpm120to120_beat3_large",
+            "sample_count": 196,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 62,
+                "3": 134
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_022415_bpm120to120_beat2_small",
+            "sample_count": 197,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 62,
+                "3": 135
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_022517_bpm120to120_beat3_small",
+            "sample_count": 197,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 62,
+                "3": 135
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_023901_bpm100to100_beat3_large",
+            "sample_count": 196,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "2": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0,
+                "2": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0,
+                "2": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 61,
+                "2": 135
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_024003_bpm100to100_beat3_small",
+            "sample_count": 197,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "2": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0,
+                "2": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0,
+                "2": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 62,
+                "2": 135
+              },
+              "bpm_mae_window": 0.0
+            }
+          }
+        ]
+      },
+      {
+        "transition_margin_seconds": 1.0,
+        "sample_count": 2282,
+        "mixed_bpm_excluded_count": 106,
+        "transition_margin_excluded_count": 140,
+        "raw": {
+          "tempo_acc": 0.9995617879053462,
+          "gain_acc": 1.0,
+          "true_switch_count": 16,
+          "pred_switch_count": 18,
+          "false_switch_count": 1,
+          "false_switches_per_min": 1.3499206771964416,
+          "switch_delay_mean_s": 0.0,
+          "switch_delay_p90_s": 0.0,
+          "missed_switch_count": 0,
+          "tempo_macro_precision": 0.999757045675413,
+          "tempo_macro_recall": 0.9994879672299026,
+          "tempo_macro_f1": 0.9996222653821074,
+          "tempo_per_class_precision": {
+            "1": 0.999271137026239,
+            "2": 1.0,
+            "3": 1.0
+          },
+          "tempo_per_class_recall": {
+            "1": 1.0,
+            "2": 1.0,
+            "3": 0.9984639016897081
+          },
+          "tempo_per_class_f1": {
+            "1": 0.999635435654393,
+            "2": 1.0,
+            "3": 0.9992313604919293
+          },
+          "tempo_per_class_support": {
+            "1": 1371,
+            "2": 260,
+            "3": 651
+          },
+          "bpm_mae_window": 0.017528483644127846
+        },
+        "smoothed": {
+          "tempo_acc": 1.0,
+          "gain_acc": 1.0,
+          "true_switch_count": 16,
+          "pred_switch_count": 16,
+          "false_switch_count": 0,
+          "false_switches_per_min": 0.0,
+          "switch_delay_mean_s": 0.0,
+          "switch_delay_p90_s": 0.0,
+          "missed_switch_count": 0,
+          "tempo_macro_precision": 1.0,
+          "tempo_macro_recall": 1.0,
+          "tempo_macro_f1": 1.0,
+          "tempo_per_class_precision": {
+            "1": 1.0,
+            "2": 1.0,
+            "3": 1.0
+          },
+          "tempo_per_class_recall": {
+            "1": 1.0,
+            "2": 1.0,
+            "3": 1.0
+          },
+          "tempo_per_class_f1": {
+            "1": 1.0,
+            "2": 1.0,
+            "3": 1.0
+          },
+          "tempo_per_class_support": {
+            "1": 1371,
+            "2": 260,
+            "3": 651
+          },
+          "bpm_mae_window": 0.0
+        },
+        "per_session": [
+          {
+            "session": "session_20260617_034934_bpm080_beat2_large",
+            "sample_count": 242,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 0,
+              "pred_switch_count": 0,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 242
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_035040_bpm080_beat2_small",
+            "sample_count": 243,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 0,
+              "pred_switch_count": 0,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 243
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_035253_bpm080_beat3_large",
+            "sample_count": 242,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 0,
+              "pred_switch_count": 0,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 242
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_035538_bpm080_beat3_small",
+            "sample_count": 243,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 0,
+              "pred_switch_count": 0,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 243
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_021702_bpm120to120_beat2_large",
+            "sample_count": 188,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 57,
+                "3": 131
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_021839_bpm120to120_beat2_large",
+            "sample_count": 187,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 57,
+                "3": 130
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_021943_bpm120to120_beat3_large",
+            "sample_count": 186,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 57,
+                "3": 129
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_022415_bpm120to120_beat2_small",
+            "sample_count": 187,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 57,
+                "3": 130
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_022517_bpm120to120_beat3_small",
+            "sample_count": 189,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0,
+                "3": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 58,
+                "3": 131
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_023901_bpm100to100_beat3_large",
+            "sample_count": 186,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "2": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0,
+                "2": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0,
+                "2": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 57,
+                "2": 129
+              },
+              "bpm_mae_window": 0.0
+            }
+          },
+          {
+            "session": "session_20260617_024003_bpm100to100_beat3_small",
+            "sample_count": 189,
+            "smoothed": {
+              "tempo_acc": 1.0,
+              "gain_acc": 1.0,
+              "true_switch_count": 2,
+              "pred_switch_count": 2,
+              "false_switch_count": 0,
+              "false_switches_per_min": 0.0,
+              "switch_delay_mean_s": 0.0,
+              "switch_delay_p90_s": 0.0,
+              "missed_switch_count": 0,
+              "tempo_macro_precision": 1.0,
+              "tempo_macro_recall": 1.0,
+              "tempo_macro_f1": 1.0,
+              "tempo_per_class_precision": {
+                "1": 1.0,
+                "2": 1.0
+              },
+              "tempo_per_class_recall": {
+                "1": 1.0,
+                "2": 1.0
+              },
+              "tempo_per_class_f1": {
+                "1": 1.0,
+                "2": 1.0
+              },
+              "tempo_per_class_support": {
+                "1": 58,
+                "2": 131
+              },
+              "bpm_mae_window": 0.0
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    "Quick TCN probe trains and evaluates on the same fixed-camera static80/transitions processed roots.",
+    "Mixed BPM windows and configured boundary-jitter windows are excluded from training.",
+    "Mixed BPM windows are excluded from margin scoring.",
+    "Use this as a fast TCN comparison, not as strict heldout evidence."
+  ]
+}

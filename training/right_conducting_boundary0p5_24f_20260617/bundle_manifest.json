@@ -1,0 +1,133 @@
+{
+  "bundle_name": "right_conducting_boundary0p5_24f_20260617",
+  "source_repo": "/home/jhkim/jongha/MotionBERT",
+  "policy": {
+    "window_frames": 24,
+    "window_seconds_at_15fps": 1.6,
+    "stride_frames": 3,
+    "stride_seconds_at_15fps": 0.2,
+    "boundary_margin_seconds_each_side": 0.5,
+    "live_window_mode": "trailing / no future frames"
+  },
+  "motionbert": {
+    "head_checkpoint": "motionbert_24f/all_train_head.pt",
+    "backbone_checkpoint": "motionbert_24f/mb_lite_v0.pt",
+    "backbone_config": "motionbert_24f/MB_lite.yaml",
+    "feature_mode": "mean_std_delta",
+    "input_mask_mode": "as_is",
+    "note": "MotionBERT requires both the frozen backbone checkpoint/config and the trained head checkpoint."
+  },
+  "tcn": {
+    "checkpoint": "tcn_24f/tcn_conducting_head.pt",
+    "note": "TCN checkpoint includes model_state, input_mean/input_std, and config."
+  },
+  "copied_count": 21,
+  "copied": [
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/motionbert_head_boundary0p5_shortwin_static80_transitions_e120_h512_lr3e3_24f/all_train_head.pt",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/motionbert_24f/all_train_head.pt",
+      "bytes": 4240253
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/motionbert_head_boundary0p5_shortwin_static80_transitions_e120_h512_lr3e3_24f/fold_0_head.pt",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/motionbert_24f/fold_0_head.pt",
+      "bytes": 4240327
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/motionbert_head_boundary0p5_shortwin_static80_transitions_e120_h512_lr3e3_24f/fold_1_head.pt",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/motionbert_24f/fold_1_head.pt",
+      "bytes": 4240327
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/motionbert_head_boundary0p5_shortwin_static80_transitions_e120_h512_lr3e3_24f/fold_2_head.pt",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/motionbert_24f/fold_2_head.pt",
+      "bytes": 4240327
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/motionbert_head_boundary0p5_shortwin_static80_transitions_e120_h512_lr3e3_24f/scores.json",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/motionbert_24f/scores.json",
+      "bytes": 5779
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/motionbert_head_boundary0p5_shortwin_static80_transitions_e120_h512_lr3e3_24f/scores.md",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/motionbert_24f/scores.md",
+      "bytes": 1609
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/motionbert_devset_transition_score_boundary0p5_shortwin_static80_transitions_e120_h512_lr3e3_24f.json",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/motionbert_24f/devset_transition_score.json",
+      "bytes": 38682
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/motionbert_devset_gate_boundary0p5_shortwin_static80_transitions_e120_h512_lr3e3_24f.json",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/motionbert_24f/devset_gate.json",
+      "bytes": 2482
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/motionbert_gate_boundary0p5_shortwin_static80_transitions_e120_h512_lr3e3_24f.json",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/motionbert_24f/strict_score_gate.json",
+      "bytes": 2416
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/motionbert_cache_boundary0p5_shortwin_static80_transitions_24f/manifest.json",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/motionbert_24f/cache_manifest.json",
+      "bytes": 573
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/dataset_boundary0p5_shortwin_static80_transitions_24f/manifest.json",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/motionbert_24f/dataset_manifest.json",
+      "bytes": 2413
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/checkpoint/MB_lite.yaml",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/motionbert_24f/MB_lite.yaml",
+      "bytes": 902
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/checkpoint/mb_lite_v0.pt",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/motionbert_24f/mb_lite_v0.pt",
+      "bytes": 64099897
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/tcn_boundary0p5_shortwin_quick_probe_20260617/24f/tcn_conducting_head.pt",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/tcn_24f/tcn_conducting_head.pt",
+      "bytes": 602691
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/tcn_boundary0p5_shortwin_quick_probe_20260617/24f/scores.json",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/tcn_24f/scores.json",
+      "bytes": 45717
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/tcn_boundary0p5_shortwin_quick_probe_20260617/24f/scores.md",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/tcn_24f/scores.md",
+      "bytes": 1223
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/tcn_boundary0p5_shortwin_quick_probe_20260617/24f/structure.md",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/tcn_24f/structure.md",
+      "bytes": 270
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/boundary0p5_compact_table.md",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/reports/boundary0p5_compact_table.md",
+      "bytes": 3530
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/boundary0p5_metric_cards.md",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/reports/boundary0p5_metric_cards.md",
+      "bytes": 16625
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/augmentation_delay_smoothing_summary.md",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/reports/augmentation_delay_smoothing_summary.md",
+      "bytes": 4321
+    },
+    {
+      "src": "/home/jhkim/jongha/MotionBERT/outputs/right_conducting/boundary0p5_all_windows_tcn_motionbert_summary.md",
+      "dst": "/home/jhkim/jongha/Gesture-control-conduct/training/right_conducting_boundary0p5_24f_20260617/reports/boundary0p5_all_windows_tcn_motionbert_summary.md",
+      "bytes": 5263
+    }
+  ],
+  "missing": []
+}

@@ -1,0 +1,90 @@
+{
+  "status": "NO_GO",
+  "score_json": "outputs/right_conducting/motionbert_head_boundary0p5_shortwin_static80_transitions_e120_h512_lr3e3_24f/scores.json",
+  "detailed_json": "outputs/right_conducting/motionbert_detailed_boundary0p5_shortwin_static80_transitions_e120_h512_lr3e3_24f.json",
+  "model_type_filter": "",
+  "thresholds": {
+    "min_cv_tempo_acc": 0.7,
+    "min_cv_gain_acc": 0.95,
+    "min_transition_tempo_acc": 0.6,
+    "max_transition_bpm_mae": 10.0,
+    "min_transition_gain_acc": 0.8,
+    "min_tempo_class_recall": 0.5
+  },
+  "required_tempo_classes": [
+    "80",
+    "120"
+  ],
+  "selected_cv_row": {
+    "run_name": "motionbert_lite_head_v0_24f",
+    "model_type": "motionbert_lite_head",
+    "eval_set": "cv_val",
+    "fold_or_subject": "cv_mean"
+  },
+  "selected_transition_row": {
+    "run_name": "motionbert_lite_head_v0_24f",
+    "model_type": "motionbert_lite_head",
+    "eval_set": "transition_eval_222455_24f_stable",
+    "fold_or_subject": "session_20260616_222455_bpm120_beat4_large"
+  },
+  "transition_metric_source": "detailed_json",
+  "checks": [
+    {
+      "name": "cv_tempo_acc",
+      "value": 0.7068055693712401,
+      "op": ">=",
+      "threshold": 0.7,
+      "passed": true,
+      "detail": "tempo_acc must be >= 0.7"
+    },
+    {
+      "name": "cv_gain_acc",
+      "value": 0.9788962323830983,
+      "op": ">=",
+      "threshold": 0.95,
+      "passed": true,
+      "detail": "gain_acc must be >= 0.95"
+    },
+    {
+      "name": "transition_tempo_acc",
+      "value": 0.25448028673835127,
+      "op": ">=",
+      "threshold": 0.6,
+      "passed": false,
+      "detail": "tempo_acc must be >= 0.6"
+    },
+    {
+      "name": "transition_bpm_mae_window",
+      "value": 23.36917495727539,
+      "op": "<=",
+      "threshold": 10.0,
+      "passed": false,
+      "detail": "bpm_mae_window must be <= 10.0"
+    },
+    {
+      "name": "transition_gain_acc",
+      "value": 0.8028673835125448,
+      "op": ">=",
+      "threshold": 0.8,
+      "passed": true,
+      "detail": "gain_acc must be >= 0.8"
+    },
+    {
+      "name": "tempo_80_recall",
+      "value": 0.9565217391304348,
+      "op": ">=",
+      "threshold": 0.5,
+      "passed": true,
+      "detail": "support=23"
+    },
+    {
+      "name": "tempo_120_recall",
+      "value": 0.006535947712418301,
+      "op": ">=",
+      "threshold": 0.5,
+      "passed": false,
+      "detail": "support=153"
+    }
+  ],
+  "warnings": []
+}

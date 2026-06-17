@@ -1,0 +1,88 @@
+{
+  "dataset_version": "right_conducting_v0_24f",
+  "source_zip": "outputs/right_conducting/recordings_staged_static80_transitions.zip",
+  "output_dir": "outputs/right_conducting/dataset_boundary0p5_shortwin_static80_transitions_24f",
+  "windows_file": "windows_24f_v0.jsonl",
+  "window_frames": 24,
+  "stride_frames": 3,
+  "bpm_bins": [
+    60,
+    80,
+    100,
+    120
+  ],
+  "take_count": 35,
+  "window_count": 10640,
+  "fold_count": 3,
+  "augment_copies_per_train_window": 5,
+  "boundary_jitter_seconds": 0.5,
+  "boundary_filter_policy": "drop windows whose half-open [start_frame,end_frame) overlaps any BPM transition +/- jitter",
+  "boundary_filtered_count": 182,
+  "boundary_filter_summaries": [
+    {
+      "take_id": "session_20260617_021702_bpm120to120_beat2_large",
+      "filtered_count": 26,
+      "kept_count": 197
+    },
+    {
+      "take_id": "session_20260617_021839_bpm120to120_beat2_large",
+      "filtered_count": 26,
+      "kept_count": 196
+    },
+    {
+      "take_id": "session_20260617_021943_bpm120to120_beat3_large",
+      "filtered_count": 26,
+      "kept_count": 196
+    },
+    {
+      "take_id": "session_20260617_022415_bpm120to120_beat2_small",
+      "filtered_count": 26,
+      "kept_count": 197
+    },
+    {
+      "take_id": "session_20260617_022517_bpm120to120_beat3_small",
+      "filtered_count": 26,
+      "kept_count": 197
+    },
+    {
+      "take_id": "session_20260617_023901_bpm100to100_beat3_large",
+      "filtered_count": 26,
+      "kept_count": 196
+    },
+    {
+      "take_id": "session_20260617_024003_bpm100to100_beat3_small",
+      "filtered_count": 26,
+      "kept_count": 197
+    }
+  ],
+  "fold_summaries": [
+    {
+      "fold": 0,
+      "train_original": 7023,
+      "train_augmented": 35115,
+      "train_total": 42138,
+      "val_original": 3617,
+      "val_augmented": 0,
+      "augmentation_ratio_vs_train_original": 5.0
+    },
+    {
+      "fold": 1,
+      "train_original": 6995,
+      "train_augmented": 34975,
+      "train_total": 41970,
+      "val_original": 3645,
+      "val_augmented": 0,
+      "augmentation_ratio_vs_train_original": 5.0
+    },
+    {
+      "fold": 2,
+      "train_original": 7262,
+      "train_augmented": 36310,
+      "train_total": 43572,
+      "val_original": 3378,
+      "val_augmented": 0,
+      "augmentation_ratio_vs_train_original": 5.0
+    }
+  ],
+  "validation_augmentation_policy": "validation samples are original only"
+}
